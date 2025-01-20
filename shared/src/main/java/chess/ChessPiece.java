@@ -1,8 +1,6 @@
 package chess;
 
-import chess.pieces.BishopMovesCalculator;
-import chess.pieces.KingMovesCalculator;
-import chess.pieces.QueenMovesCalculator;
+import chess.pieces.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,22 +57,32 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         // delegate this to pieceMovesCalculator
         // Creates an instance of rook moves calculator, then get back the answer.
-        switch (type) {
-            case PieceType.KING:
+        return switch (type) {
+            case PieceType.KING -> {
                 KingMovesCalculator kingCalc = new KingMovesCalculator();
-                return kingCalc.pieceMoves(board, myPosition);
-            case PieceType.QUEEN:
+                yield kingCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.QUEEN -> {
                 QueenMovesCalculator queenCalc = new QueenMovesCalculator();
-                return queenCalc.pieceMoves(board, myPosition);
-            case PieceType.BISHOP:
+                yield queenCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.BISHOP -> {
                 BishopMovesCalculator bishopCalc = new BishopMovesCalculator();
-                return bishopCalc.pieceMoves(board, myPosition);
-
-
-
-
-        }
-        return new ArrayList<>();
+                yield bishopCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.ROOK -> {
+                RookMovesCalculator rookCalc = new RookMovesCalculator();
+                yield rookCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.KNIGHT -> {
+                KnightMovesCalculator knightCalc = new KnightMovesCalculator();
+                yield knightCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.PAWN -> {
+                PawnMovesCalculator pawnCalc = new PawnMovesCalculator();
+                yield pawnCalc.pieceMoves(board, myPosition);
+            }
+        };
     }
 }
 
