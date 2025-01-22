@@ -60,6 +60,10 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return startPosition + " -> " + endPosition;
+        String returnString = startPosition + " -> " + endPosition;
+        if (promotionPiece != null) {
+            returnString += " Promotion Piece:" + promotionPiece.toString();
+        }
+        return returnString;
     }
 }
