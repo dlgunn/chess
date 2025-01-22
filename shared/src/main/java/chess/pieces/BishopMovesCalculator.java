@@ -13,8 +13,7 @@ public class BishopMovesCalculator extends PieceMovesCalculator {
 
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = this.diagonalMoves(myPosition);
-        return moves;
+        return this.diagonalMoves(board, myPosition);
     }
 
 }

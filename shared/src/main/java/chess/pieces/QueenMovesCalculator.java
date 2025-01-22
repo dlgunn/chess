@@ -14,9 +14,9 @@ public class QueenMovesCalculator extends PieceMovesCalculator {
 
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = this.horizontalMoves(myPosition);
-        moves.addAll(this.verticalMoves(myPosition));
-        moves.addAll(this.diagonalMoves(myPosition));
+        Collection<ChessMove> moves = this.horizontalMoves(board, myPosition);
+        moves.addAll(this.verticalMoves(board, myPosition));
+        moves.addAll(this.diagonalMoves(board, myPosition));
         return moves;
     }
 }
