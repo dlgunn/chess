@@ -14,7 +14,7 @@ public class PieceMovesCalculator {
     }
 
     public boolean inBounds(int position) {
-        return position >= 0 && position <= 8;
+        return position >= 1 && position <= 8;
     }
 
     public Collection<ChessMove> horizontalMoves(ChessBoard board, ChessPosition myPosition) {
