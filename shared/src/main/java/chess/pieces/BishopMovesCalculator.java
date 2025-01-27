@@ -7,13 +7,8 @@ import chess.ChessPosition;
 import java.util.Collection;
 
 public class BishopMovesCalculator extends PieceMovesCalculator {
-    public BishopMovesCalculator() {
-        super();
-    }
-
     @Override
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return this.diagonalMoves(board, myPosition);
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
+        return diagonalMoves(board, position);
     }
-
 }

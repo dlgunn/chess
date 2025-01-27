@@ -9,6 +9,10 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessMove {
+    private final ChessPosition startPosition;
+    private final ChessPosition endPosition;
+    private final ChessPiece.PieceType promotionPiece;
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -23,10 +27,6 @@ public class ChessMove {
         return Objects.hash(startPosition, endPosition, promotionPiece);
     }
 
-    private final ChessPosition startPosition;
-    private final ChessPosition endPosition;
-    private final ChessPiece.PieceType promotionPiece;
-
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition = startPosition;
@@ -38,14 +38,14 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return startPosition;
+        return this.startPosition;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        return endPosition;
+        return this.endPosition;
     }
 
     /**
@@ -55,14 +55,14 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return promotionPiece;
+        return this.promotionPiece;
     }
 
     @Override
     public String toString() {
-        String returnString = startPosition + " -> " + endPosition;
-        if (promotionPiece != null) {
-            returnString += " Promotion Piece:" + promotionPiece.toString();
+        String returnString = startPosition.toString() + "->" + endPosition.toString();
+        if (this.promotionPiece != null) {
+            returnString += "Promotion Piece: " + promotionPiece;
         }
         return returnString;
     }

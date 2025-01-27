@@ -13,12 +13,11 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
-
-    private final ChessGame.TeamColor pieceColor;
-    private final PieceType type;
+    private final ChessGame.TeamColor color;
+    private final ChessPiece.PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this.pieceColor = pieceColor;
+        this.color = pieceColor;
         this.type = type;
     }
 
@@ -28,12 +27,12 @@ public class ChessPiece {
             return false;
         }
         ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type;
+        return color == that.color && type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pieceColor, type);
+        return Objects.hash(color, type);
     }
 
     /**
@@ -52,14 +51,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return pieceColor;
+        return color;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return type;
+        return this.type;
     }
 
     /**
@@ -70,35 +69,33 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        // delegate this to pieceMovesCalculator
-        // Creates an instance of rook moves calculator, then get back the answer.
-        return switch (type) {
-            case PieceType.KING -> {
+        ChessPiece piece = board.getPiece(myPosition);
+        ArrayList<ChessMove> moves = null;
+        switch (piece.getPieceType()) {
+            case PieceType.KING:
                 KingMovesCalculator kingCalc = new KingMovesCalculator();
-                yield kingCalc.pieceMoves(board, myPosition);
-            }
-            case PieceType.QUEEN -> {
-                QueenMovesCalculator queenCalc = new QueenMovesCalculator();
-                yield queenCalc.pieceMoves(board, myPosition);
-            }
-            case PieceType.BISHOP -> {
-                BishopMovesCalculator bishopCalc = new BishopMovesCalculator();
-                yield bishopCalc.pieceMoves(board, myPosition);
-            }
-            case PieceType.ROOK -> {
+                moves = (ArrayList<ChessMove>) kingCalc.pieceMoves(board, myPosition);
+                break;
+            case PieceType.ROOK:
                 RookMovesCalculator rookCalc = new RookMovesCalculator();
-                yield rookCalc.pieceMoves(board, myPosition);
-            }
-            case PieceType.KNIGHT -> {
+                moves = (ArrayList<ChessMove>) rookCalc.pieceMoves(board,myPosition);
+                break;
+            case PieceType.BISHOP:
+                BishopMovesCalculator bishopCalc = new BishopMovesCalculator();
+                moves = (ArrayList<ChessMove>) bishopCalc.pieceMoves(board,myPosition);
+                break;
+            case PieceType.QUEEN:
+                QueenMovesCalculator queenCalc = new QueenMovesCalculator();
+                moves = (ArrayList<ChessMove>) queenCalc.pieceMoves(board,myPosition);
+                break;
+            case PieceType.KNIGHT:
                 KnightMovesCalculator knightCalc = new KnightMovesCalculator();
-                yield knightCalc.pieceMoves(board, myPosition);
-            }
-            case PieceType.PAWN -> {
+                moves = (ArrayList<ChessMove>) knightCalc.pieceMoves(board,myPosition);
+                break;
+            case PieceType.PAWN:
                 PawnMovesCalculator pawnCalc = new PawnMovesCalculator();
-                yield pawnCalc.pieceMoves(board, myPosition);
-            }
-        };
+                moves = (ArrayList<ChessMove>) pawnCalc.pieceMoves(board,myPosition);
+        }
+        return moves;
     }
 }
-
-

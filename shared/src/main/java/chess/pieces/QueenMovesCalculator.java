@@ -8,15 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class QueenMovesCalculator extends PieceMovesCalculator {
-    public QueenMovesCalculator() {
-        super();
-    }
-
     @Override
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = this.horizontalMoves(board, myPosition);
-        moves.addAll(this.verticalMoves(board, myPosition));
-        moves.addAll(this.diagonalMoves(board, myPosition));
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        moves.addAll(horizontalMoves(board,position));
+        moves.addAll(diagonalMoves(board,position));
         return moves;
     }
+
 }
