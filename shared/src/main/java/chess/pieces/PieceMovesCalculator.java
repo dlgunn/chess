@@ -34,7 +34,8 @@ public class PieceMovesCalculator {
         return false;
     }
 
-    public boolean addPawnMove(Collection<ChessMove> moves, int row, int rowOffset, int colOffset,ChessPosition startPosition, ChessPosition newPosition, ChessPiece occupyingPiece) {
+    public boolean addPawnMove(Collection<ChessMove> moves, int row, int rowOffset, int colOffset,
+                               ChessPosition startPosition, ChessPosition newPosition, ChessPiece occupyingPiece) {
         int doubleStep = 2;
         ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
         if (rowOffset==-1) {
