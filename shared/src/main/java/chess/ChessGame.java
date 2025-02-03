@@ -50,9 +50,9 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
-        ChessPiece piece = this.board.getPiece(startPosition);
-        ArrayList<ChessMove> allMoves = (ArrayList<ChessMove>) piece.pieceMoves(this.board, startPosition);
+        ChessPiece piece = board.getPiece(startPosition);
+        ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(board,startPosition);
+
 
         return moves;
     }
@@ -73,7 +73,31 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = findPiece(teamColor, ChessPiece.PieceType.KING);
+        return false;
+    }
+
+    public boolean checkHorizontals(ChessPosition kingPosition) {
+        return false;
+
+    }
+
+    public boolean extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
+        return false;
+
+    }
+
+    public ChessPosition findPiece(ChessGame.TeamColor color, ChessPiece.PieceType pieceType) {
+        ChessPiece piece = new ChessPiece(color,pieceType);
+        for (int i = 0; i <= 8; ++i) {
+            for (int j = 0; j <= 8; ++j) {
+                ChessPosition position = new ChessPosition(i, j);
+                if (board.getPiece(position) == piece) {
+                    return position;
+                }
+            }
+        }
+        return null;
     }
 
     /**
