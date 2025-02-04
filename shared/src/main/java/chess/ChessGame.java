@@ -88,12 +88,27 @@ public class ChessGame {
             type = ChessPiece.PieceType.BISHOP;
         }
         ChessPiece scaryPiece = extendCheck(kingPosition,rowOffset,colOffset);
+        if (scaryPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            return scaryPawn(color, kingPosition, rowOffset, colOffset);
+        }
         return scaryPiece.getTeamColor() != color && (scaryPiece.getPieceType() == ChessPiece.PieceType.QUEEN || scaryPiece.getPieceType() == type);
+    }
+
+    public boolean scaryPawn(TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
+        boolean scary = false;
+        int up = 1;
+        if (color == TeamColor.BLACK) {
+            up = -1;
+        }
+        return rowOffset == up && colOffset != 0;
     }
 
     public ChessPiece extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
         int row = kingPosition.getRow();
         int col = kingPosition.getColumn();
+        int originalRowOffset = rowOffset;
+        int originalColOffset = colOffset;
+        int distance = 0;
         ChessPiece occupyingPiece = null;
         do {
             ChessPosition newPosition = new ChessPosition(row + rowOffset, col + colOffset);
@@ -101,9 +116,13 @@ public class ChessGame {
                 return null;
             }
             occupyingPiece = board.getPiece(newPosition);
-            rowOffset += 1;
-            colOffset += 1;
+            rowOffset += originalRowOffset;
+            colOffset += originalColOffset;
+            distance++;
         } while (occupyingPiece == null);
+        if (occupyingPiece.getPieceType() == ChessPiece.PieceType.PAWN && distance > 1) {
+            return null;
+        }
         return occupyingPiece;
     }
 
