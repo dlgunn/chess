@@ -77,9 +77,18 @@ public class ChessGame {
         return false;
     }
 
-    public boolean checkHorizontals(ChessPosition kingPosition) {
-        return false;
+    public boolean checkSlidingPieces(ChessPosition kingPosition, ChessGame.TeamColor color) {
+        return isPieceScary(color, kingPosition,1, 0) || isPieceScary(color,kingPosition,0,1) || isPieceScary(color,kingPosition,-1,0) || isPieceScary(color,kingPosition,0,-1)
+                || isPieceScary(color,kingPosition,1,1) || isPieceScary(color,kingPosition,1,-1) || isPieceScary(color,kingPosition,-1,1) || isPieceScary(color,kingPosition,-1,-1);
+    }
 
+    public boolean isPieceScary(ChessGame.TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
+        ChessPiece.PieceType type = ChessPiece.PieceType.ROOK;
+        if (rowOffset != 0 && colOffset != 0) {
+            type = ChessPiece.PieceType.BISHOP;
+        }
+        ChessPiece scaryPiece = extendCheck(kingPosition,rowOffset,colOffset);
+        return scaryPiece.getTeamColor() != color && (scaryPiece.getPieceType() == ChessPiece.PieceType.QUEEN || scaryPiece.getPieceType() == type);
     }
 
     public ChessPiece extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
