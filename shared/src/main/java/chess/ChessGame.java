@@ -74,6 +74,23 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPosition = findPiece(teamColor, ChessPiece.PieceType.KING);
+        ArrayList<ChessMove> moves = null;
+        ChessPiece attackingPiece = null;
+        for (int i = 0; i <= 8; ++i) {
+            for (int j = 0; j <= 8; ++j) {
+                ChessPosition position = new ChessPosition(i, j);
+                attackingPiece = board.getPiece(position);
+                if (attackingPiece != null && attackingPiece.getTeamColor() != teamColor) {
+                    moves = (ArrayList<ChessMove>) attackingPiece.pieceMoves(board,position);
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition() == kingPosition) {
+                            return true;
+                        }
+                    }
+
+                }
+            }
+        }
         return false;
     }
 
