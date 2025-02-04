@@ -51,10 +51,17 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(board,startPosition);
-
-
-        return moves;
+        TeamColor color = piece.getTeamColor();
+        ChessBoard board = null;
+        ArrayList<ChessMove> returnMoves = new ArrayList<>();
+        ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(this.board,startPosition);
+        for (ChessMove move : moves) {
+            board = new ChessBoard(this.board);
+            if (!isInSimulatedCheck(color,move,board)) {
+                returnMoves.add(move);
+            }
+        }
+        return returnMoves;
     }
 
     /**
@@ -77,14 +84,14 @@ public class ChessGame {
         ChessPosition kingPosition = findPiece(teamColor, ChessPiece.PieceType.KING);
         ArrayList<ChessMove> moves = null;
         ChessPiece attackingPiece = null;
-        for (int i = 0; i <= 8; ++i) {
-            for (int j = 0; j <= 8; ++j) {
+        for (int i = 1; i <= 8; ++i) {
+            for (int j = 1; j <= 8; ++j) {
                 ChessPosition position = new ChessPosition(i, j);
                 attackingPiece = board.getPiece(position);
                 if (attackingPiece != null && attackingPiece.getTeamColor() != teamColor) {
                     moves = (ArrayList<ChessMove>) attackingPiece.pieceMoves(board,position);
                     for (ChessMove move : moves) {
-                        if (move.getEndPosition() == kingPosition) {
+                        if (move.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
                     }
@@ -146,10 +153,10 @@ public class ChessGame {
 
     public ChessPosition findPiece(ChessGame.TeamColor color, ChessPiece.PieceType pieceType) {
         ChessPiece piece = new ChessPiece(color,pieceType);
-        for (int i = 0; i <= 8; ++i) {
-            for (int j = 0; j <= 8; ++j) {
+        for (int i = 1; i <= 8; ++i) {
+            for (int j = 1; j <= 8; ++j) {
                 ChessPosition position = new ChessPosition(i, j);
-                if (board.getPiece(position) == piece) {
+                if (piece.equals(board.getPiece(position))) {
                     return position;
                 }
             }
