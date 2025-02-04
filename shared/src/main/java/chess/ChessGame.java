@@ -82,9 +82,20 @@ public class ChessGame {
 
     }
 
-    public boolean extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
-        return false;
-
+    public ChessPiece extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
+        int row = kingPosition.getRow();
+        int col = kingPosition.getColumn();
+        ChessPiece occupyingPiece = null;
+        do {
+            ChessPosition newPosition = new ChessPosition(row + rowOffset, col + colOffset);
+            if (!newPosition.inBounds()) {
+                return null;
+            }
+            occupyingPiece = board.getPiece(newPosition);
+            rowOffset += 1;
+            colOffset += 1;
+        } while (occupyingPiece == null);
+        return occupyingPiece;
     }
 
     public ChessPosition findPiece(ChessGame.TeamColor color, ChessPiece.PieceType pieceType) {
