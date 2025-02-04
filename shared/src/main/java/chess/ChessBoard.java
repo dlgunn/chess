@@ -15,6 +15,17 @@ public class ChessBoard {
 
     }
 
+    public ChessBoard(ChessBoard board) {
+        ChessPiece piece;
+        for (int i = 0; i <= 8; ++i) {
+            for (int j = 0; j <= 8; ++j) {
+                ChessPosition position = new ChessPosition(i, j);
+                piece = board.getPiece(position);
+                this.addPiece(position, piece);
+            }
+        }
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -38,6 +49,11 @@ public class ChessBoard {
         return this.board[position.getRow()-1][position.getColumn()-1];
     }
 
+
+    public void removePiece(ChessPosition position) {
+        this.board[position.getRow()-1][position.getColumn()-1] = null;
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
@@ -50,7 +66,15 @@ public class ChessBoard {
 
     }
 
-    public void setPawns(ChessGame.TeamColor color) {
+    public void makeMove(ChessMove move) {
+        ChessPiece piece = this.getPiece(move.getStartPosition());
+        removePiece(move.getStartPosition());
+        addPiece(move.getEndPosition(),piece);
+    }
+
+
+
+    private void setPawns(ChessGame.TeamColor color) {
         int row = 2;
         if (color == ChessGame.TeamColor.BLACK) {
             row = 7;
@@ -59,7 +83,7 @@ public class ChessBoard {
             addPiece(new ChessPosition(row, i),new ChessPiece(color, ChessPiece.PieceType.PAWN));
         }
     }
-    public void setOtherPieces(ChessGame.TeamColor color) {
+    private void setOtherPieces(ChessGame.TeamColor color) {
         int row = 1;
         if (color == ChessGame.TeamColor.BLACK) {
             row = 8;

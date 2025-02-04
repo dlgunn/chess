@@ -64,6 +64,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        board.makeMove(move);
     }
 
     /**
@@ -164,12 +165,40 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         ChessPosition kingPosition = findPiece(teamColor, ChessPiece.PieceType.KING);
+        ChessBoard board = null;
+
         if (!isInCheck(teamColor)) {
             return false;
-        } else {
-            ArrayList<ChessMove> moves = (ArrayList<ChessMove>) board.getPiece(kingPosition).pieceMoves(board,kingPosition);
-            return false;
         }
+
+        for (int i = 0; i <= 8; ++i) {
+            for (int j = 0; j <= 8; ++j) {
+                ChessPosition position = new ChessPosition(i, j);
+                ChessPiece piece = this.board.getPiece(position);
+                if (piece != null) {
+                    for (ChessMove move : piece.pieceMoves(this.board,position)) {
+                        board = new ChessBoard(this.board);
+                        if (!isInSimulatedCheck(teamColor,move, board)) {
+                            return false;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return true;
+
+    }
+
+    public boolean isInSimulatedCheck(TeamColor teamColor, ChessMove move, ChessBoard board) {
+        board.makeMove(move);
+        ChessBoard tempBoard = this.board;
+        this.board = board;
+        boolean inCheck = this.isInCheck(teamColor);
+        this.board = tempBoard;
+        return inCheck;
+
     }
 
     /**
