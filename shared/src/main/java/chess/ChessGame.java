@@ -94,54 +94,54 @@ public class ChessGame {
         return false;
     }
 
-    public boolean checkSlidingPieces(ChessPosition kingPosition, ChessGame.TeamColor color) {
-        return isPieceScary(color, kingPosition,1, 0) || isPieceScary(color,kingPosition,0,1) || isPieceScary(color,kingPosition,-1,0) || isPieceScary(color,kingPosition,0,-1)
-                || isPieceScary(color,kingPosition,1,1) || isPieceScary(color,kingPosition,1,-1) || isPieceScary(color,kingPosition,-1,1) || isPieceScary(color,kingPosition,-1,-1);
-    }
+//    public boolean checkSlidingPieces(ChessPosition kingPosition, ChessGame.TeamColor color) {
+//        return isPieceScary(color, kingPosition,1, 0) || isPieceScary(color,kingPosition,0,1) || isPieceScary(color,kingPosition,-1,0) || isPieceScary(color,kingPosition,0,-1)
+//                || isPieceScary(color,kingPosition,1,1) || isPieceScary(color,kingPosition,1,-1) || isPieceScary(color,kingPosition,-1,1) || isPieceScary(color,kingPosition,-1,-1);
+//    }
 
-    public boolean isPieceScary(ChessGame.TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
-        ChessPiece.PieceType type = ChessPiece.PieceType.ROOK;
-        if (rowOffset != 0 && colOffset != 0) {
-            type = ChessPiece.PieceType.BISHOP;
-        }
-        ChessPiece scaryPiece = extendCheck(kingPosition,rowOffset,colOffset);
-        if (scaryPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            return scaryPawn(color, kingPosition, rowOffset, colOffset);
-        }
-        return scaryPiece.getTeamColor() != color && (scaryPiece.getPieceType() == ChessPiece.PieceType.QUEEN || scaryPiece.getPieceType() == type);
-    }
+//    public boolean isPieceScary(ChessGame.TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
+//        ChessPiece.PieceType type = ChessPiece.PieceType.ROOK;
+//        if (rowOffset != 0 && colOffset != 0) {
+//            type = ChessPiece.PieceType.BISHOP;
+//        }
+//        ChessPiece scaryPiece = extendCheck(kingPosition,rowOffset,colOffset);
+//        if (scaryPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+//            return scaryPawn(color, kingPosition, rowOffset, colOffset);
+//        }
+//        return scaryPiece.getTeamColor() != color && (scaryPiece.getPieceType() == ChessPiece.PieceType.QUEEN || scaryPiece.getPieceType() == type);
+//    }
 
-    public boolean scaryPawn(TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
-        boolean scary = false;
-        int up = 1;
-        if (color == TeamColor.BLACK) {
-            up = -1;
-        }
-        return rowOffset == up && colOffset != 0;
-    }
+//    public boolean scaryPawn(TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
+//        boolean scary = false;
+//        int up = 1;
+//        if (color == TeamColor.BLACK) {
+//            up = -1;
+//        }
+//        return rowOffset == up && colOffset != 0;
+//    }
 
-    public ChessPiece extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
-        int row = kingPosition.getRow();
-        int col = kingPosition.getColumn();
-        int originalRowOffset = rowOffset;
-        int originalColOffset = colOffset;
-        int distance = 0;
-        ChessPiece occupyingPiece = null;
-        do {
-            ChessPosition newPosition = new ChessPosition(row + rowOffset, col + colOffset);
-            if (!newPosition.inBounds()) {
-                return null;
-            }
-            occupyingPiece = board.getPiece(newPosition);
-            rowOffset += originalRowOffset;
-            colOffset += originalColOffset;
-            distance++;
-        } while (occupyingPiece == null);
-        if (occupyingPiece.getPieceType() == ChessPiece.PieceType.PAWN && distance > 1) {
-            return null;
-        }
-        return occupyingPiece;
-    }
+//    public ChessPiece extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
+//        int row = kingPosition.getRow();
+//        int col = kingPosition.getColumn();
+//        int originalRowOffset = rowOffset;
+//        int originalColOffset = colOffset;
+//        int distance = 0;
+//        ChessPiece occupyingPiece = null;
+//        do {
+//            ChessPosition newPosition = new ChessPosition(row + rowOffset, col + colOffset);
+//            if (!newPosition.inBounds()) {
+//                return null;
+//            }
+//            occupyingPiece = board.getPiece(newPosition);
+//            rowOffset += originalRowOffset;
+//            colOffset += originalColOffset;
+//            distance++;
+//        } while (occupyingPiece == null);
+//        if (occupyingPiece.getPieceType() == ChessPiece.PieceType.PAWN && distance > 1) {
+//            return null;
+//        }
+//        return occupyingPiece;
+//    }
 
     public ChessPosition findPiece(ChessGame.TeamColor color, ChessPiece.PieceType pieceType) {
         ChessPiece piece = new ChessPiece(color,pieceType);
@@ -163,7 +163,13 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = findPiece(teamColor, ChessPiece.PieceType.KING);
+        if (!isInCheck(teamColor)) {
+            return false;
+        } else {
+            ArrayList<ChessMove> moves = (ArrayList<ChessMove>) board.getPiece(kingPosition).pieceMoves(board,kingPosition);
+            return false;
+        }
     }
 
     /**
