@@ -202,11 +202,11 @@ public class ChessGame {
             return false;
         }
 
-        for (int i = 0; i <= 8; ++i) {
-            for (int j = 0; j <= 8; ++j) {
+        for (int i = 1; i <= 8; ++i) {
+            for (int j = 1; j <= 8; ++j) {
                 ChessPosition position = new ChessPosition(i, j);
                 ChessPiece piece = this.board.getPiece(position);
-                if (piece != null) {
+                if (piece != null && piece.getTeamColor() == teamColor) {
                     for (ChessMove move : piece.pieceMoves(this.board,position)) {
                         board = new ChessBoard(this.board);
                         if (!isInSimulatedCheck(teamColor,move, board)) {
@@ -240,7 +240,24 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition position;
+        ChessPiece piece;
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+
+        for (int i = 1; i < 9; ++i) {
+            for (int j = 1; j < 9; ++j) {
+                position = new ChessPosition(i,j);
+                piece = board.getPiece(position);
+                if (piece == null || piece.getTeamColor() != teamColor) {
+                    continue;
+                } else if (!validMoves(position).isEmpty()){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
