@@ -57,7 +57,7 @@ public class ChessGame {
             return null;
         }
         TeamColor color = piece.getTeamColor();
-        ChessBoard board = null;
+        ChessBoard board;
         ArrayList<ChessMove> returnMoves = new ArrayList<>();
         ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(this.board,startPosition);
         for (ChessMove move : moves) {
@@ -106,8 +106,8 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPosition = findPiece(teamColor, ChessPiece.PieceType.KING);
-        ArrayList<ChessMove> moves = null;
-        ChessPiece attackingPiece = null;
+        ArrayList<ChessMove> moves;
+        ChessPiece attackingPiece;
         for (int i = 1; i <= 8; ++i) {
             for (int j = 1; j <= 8; ++j) {
                 ChessPosition position = new ChessPosition(i, j);
@@ -125,55 +125,6 @@ public class ChessGame {
         }
         return false;
     }
-
-//    public boolean checkSlidingPieces(ChessPosition kingPosition, ChessGame.TeamColor color) {
-//        return isPieceScary(color, kingPosition,1, 0) || isPieceScary(color,kingPosition,0,1) || isPieceScary(color,kingPosition,-1,0) || isPieceScary(color,kingPosition,0,-1)
-//                || isPieceScary(color,kingPosition,1,1) || isPieceScary(color,kingPosition,1,-1) || isPieceScary(color,kingPosition,-1,1) || isPieceScary(color,kingPosition,-1,-1);
-//    }
-
-//    public boolean isPieceScary(ChessGame.TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
-//        ChessPiece.PieceType type = ChessPiece.PieceType.ROOK;
-//        if (rowOffset != 0 && colOffset != 0) {
-//            type = ChessPiece.PieceType.BISHOP;
-//        }
-//        ChessPiece scaryPiece = extendCheck(kingPosition,rowOffset,colOffset);
-//        if (scaryPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
-//            return scaryPawn(color, kingPosition, rowOffset, colOffset);
-//        }
-//        return scaryPiece.getTeamColor() != color && (scaryPiece.getPieceType() == ChessPiece.PieceType.QUEEN || scaryPiece.getPieceType() == type);
-//    }
-
-//    public boolean scaryPawn(TeamColor color, ChessPosition kingPosition, int rowOffset, int colOffset) {
-//        boolean scary = false;
-//        int up = 1;
-//        if (color == TeamColor.BLACK) {
-//            up = -1;
-//        }
-//        return rowOffset == up && colOffset != 0;
-//    }
-
-//    public ChessPiece extendCheck(ChessPosition kingPosition, int rowOffset, int colOffset) {
-//        int row = kingPosition.getRow();
-//        int col = kingPosition.getColumn();
-//        int originalRowOffset = rowOffset;
-//        int originalColOffset = colOffset;
-//        int distance = 0;
-//        ChessPiece occupyingPiece = null;
-//        do {
-//            ChessPosition newPosition = new ChessPosition(row + rowOffset, col + colOffset);
-//            if (!newPosition.inBounds()) {
-//                return null;
-//            }
-//            occupyingPiece = board.getPiece(newPosition);
-//            rowOffset += originalRowOffset;
-//            colOffset += originalColOffset;
-//            distance++;
-//        } while (occupyingPiece == null);
-//        if (occupyingPiece.getPieceType() == ChessPiece.PieceType.PAWN && distance > 1) {
-//            return null;
-//        }
-//        return occupyingPiece;
-//    }
 
     public ChessPosition findPiece(ChessGame.TeamColor color, ChessPiece.PieceType pieceType) {
         ChessPiece piece = new ChessPiece(color,pieceType);
@@ -195,8 +146,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        ChessPosition kingPosition = findPiece(teamColor, ChessPiece.PieceType.KING);
-        ChessBoard board = null;
+        ChessBoard board;
 
         if (!isInCheck(teamColor)) {
             return false;
@@ -250,9 +200,7 @@ public class ChessGame {
             for (int j = 1; j < 9; ++j) {
                 position = new ChessPosition(i,j);
                 piece = board.getPiece(position);
-                if (piece == null || piece.getTeamColor() != teamColor) {
-                    continue;
-                } else if (!validMoves(position).isEmpty()){
+                if (piece != null && piece.getTeamColor() == teamColor && !validMoves(position).isEmpty()) {
                     return false;
                 }
             }

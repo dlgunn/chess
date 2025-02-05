@@ -26,10 +26,6 @@ public class ChessPosition {
         return Objects.hash(row, col);
     }
 
-    public boolean inBounds() {
-        return row < 9 && col < 9 && row > 0 && col > 0;
-    }
-
     public ChessPosition(int row, int col) {
         this.row = row;
         this.col = col;
