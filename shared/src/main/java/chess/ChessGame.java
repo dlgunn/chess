@@ -61,12 +61,47 @@ public class ChessGame {
         ArrayList<ChessMove> returnMoves = new ArrayList<>();
         ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(this.board,startPosition);
         for (ChessMove move : moves) {
-            board = new ChessBoard(this.board);
-            if (!isInSimulatedCheck(color,move,board)) {
-                returnMoves.add(move);
+            if (piece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(move.getStartPosition().getColumn()-move.getEndPosition().getColumn())>1) {
+                castle(move,returnMoves,color);
+            } else {
+                board = new ChessBoard(this.board);
+                if (!isInSimulatedCheck(color,move,board)) {
+                    returnMoves.add(move);
+                }
             }
+
         }
         return returnMoves;
+    }
+
+    public void castle(ChessMove move, ArrayList<ChessMove> moves, TeamColor color) {
+        int row = 1;
+        int rookCol = 1;
+        if (color == TeamColor.BLACK) {
+            row = 8;
+        }
+        if (move.getEndPosition().getColumn() == 7) {
+            rookCol = 8;
+        }
+        ChessPiece king = board.getPiece(move.getStartPosition());
+        ChessPiece rook = board.getPiece(new ChessPosition(row, rookCol));
+
+
+        if (this.isInCheck(color) || king.getMovedStatus() || rook.getMovedStatus()) {
+            return;
+        }
+
+        ChessBoard board = new ChessBoard((this.board));
+        int col = 6;
+        if (move.getEndPosition().getColumn() != 7) {
+            col = 4;
+        }
+        ChessPosition intermediatePosition = new ChessPosition(row, col);
+        ChessMove intermediateMove = new ChessMove(move.getStartPosition(), intermediatePosition,null);
+        if (!isInSimulatedCheck(color,intermediateMove,board) && !isInSimulatedCheck(color, move,new ChessBoard(this.board))) {
+            moves.add(move);
+        }
+
     }
 
     /**
@@ -83,7 +118,8 @@ public class ChessGame {
         }
         ArrayList<ChessMove> moves = (ArrayList<ChessMove>) validMoves(startPosition);
         if (moves.contains(move)) {
-            board.makeMove(move);
+            board.makeMove(move, board.getEnPassant());
+            piece.setMovedStatus(true);
             changeTurn();
         } else {
             throw new InvalidMoveException();
@@ -173,7 +209,7 @@ public class ChessGame {
     }
 
     public boolean isInSimulatedCheck(TeamColor teamColor, ChessMove move, ChessBoard board) {
-        board.makeMove(move);
+        board.makeMove(move, board.getEnPassant());
         ChessBoard tempBoard = this.board;
         this.board = board;
         boolean inCheck = this.isInCheck(teamColor);

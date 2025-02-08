@@ -11,6 +11,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
     private final ChessPiece[][] board = new ChessPiece[8][8];
+    private ChessPosition enPassant = null;
     public ChessBoard() {
 
     }
@@ -24,6 +25,7 @@ public class ChessBoard {
                 this.addPiece(position, piece);
             }
         }
+        enPassant = board.getEnPassant();
     }
 
     /**
@@ -66,16 +68,46 @@ public class ChessBoard {
 
     }
 
-    public void makeMove(ChessMove move) {
+    public void makeMove(ChessMove move, ChessPosition enPassant) {
         ChessPiece piece = this.getPiece(move.getStartPosition());
         removePiece(move.getStartPosition());
         ChessPiece.PieceType promotionPieceType = move.getPromotionPiece();
+
+        int colOffset = (move.getEndPosition().getColumn() - move.getStartPosition().getColumn());
+        if (piece.getPieceType()== ChessPiece.PieceType.PAWN && colOffset != 0 && this.getPiece(move.getEndPosition()) == null) {
+            removePiece(enPassant);
+        }
         if (promotionPieceType != null) {
             addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(),promotionPieceType));
         } else {
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && Math.abs(move.getStartPosition().getRow() - move.getEndPosition().getRow()) > 1) {
+                this.enPassant = move.getEndPosition();
+            } else {
+                this.enPassant = null;
+            }
             addPiece(move.getEndPosition(),piece);
         }
+        if (piece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(colOffset)>1) {
+            moveRook(colOffset, move.getStartPosition().getRow());
+        }
+        //piece.setMovedStatus(true);
 
+    }
+
+    public void moveRook(int colOffset, int row) {
+        int startCol = 1;
+        int endCol = 4;
+        if (colOffset > 0) {
+            startCol = 8;
+            endCol = 6;
+        }
+        ChessPosition startPosition = new ChessPosition(row, startCol);
+        ChessPosition endPosition = new ChessPosition(row, endCol);
+        makeMove(new ChessMove(startPosition,endPosition,null),null);
+    }
+
+    public ChessPosition getEnPassant() {
+        return enPassant;
     }
 
 

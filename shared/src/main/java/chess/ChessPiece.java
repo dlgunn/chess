@@ -15,11 +15,23 @@ import java.util.Objects;
 public class ChessPiece {
     private final ChessGame.TeamColor color;
     private final ChessPiece.PieceType type;
+    private boolean moved;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
+        moved = false;
     }
+
+    public boolean getMovedStatus() {
+        return moved;
+    }
+
+    public void setMovedStatus(boolean status) {
+        moved = status;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -29,6 +41,7 @@ public class ChessPiece {
         ChessPiece that = (ChessPiece) o;
         return color == that.color && type == that.type;
     }
+
 
     @Override
     public int hashCode() {

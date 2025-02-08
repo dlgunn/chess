@@ -22,7 +22,7 @@ public class PieceMovesCalculator {
         ChessPosition newPosition = new ChessPosition(row + rowOffset, col + colOffset);
         ChessPiece occupyingPiece = board.getPiece(newPosition);
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            return addPawnMove(moves,row,rowOffset,colOffset,startPosition, newPosition, occupyingPiece);
+            return addPawnMove(moves,row,rowOffset,colOffset,startPosition, newPosition, occupyingPiece,board.getEnPassant());
         }
         if (occupyingPiece == null) {
             moves.add(new ChessMove(startPosition, newPosition, null));
@@ -35,7 +35,7 @@ public class PieceMovesCalculator {
     }
 
     public boolean addPawnMove(Collection<ChessMove> moves, int row, int rowOffset, int colOffset,
-                               ChessPosition startPosition, ChessPosition newPosition, ChessPiece occupyingPiece) {
+                               ChessPosition startPosition, ChessPosition newPosition, ChessPiece occupyingPiece, ChessPosition enPassant) {
         int doubleStep = 2;
         ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
         if (rowOffset==-1) {
@@ -50,11 +50,23 @@ public class PieceMovesCalculator {
                 return false;
             }
         } else {
-            if (occupyingPiece != null && color != occupyingPiece.getTeamColor()) {
+            if (occupyingPiece != null && color != occupyingPiece.getTeamColor()) { // enters this if there's a diagonal attack that's open
                 addPromotion(rowOffset, moves, startPosition, newPosition);
+            } else if (occupyingPiece == null && checkEnPassant(startPosition,colOffset,enPassant)){
+                addPromotion(rowOffset,moves,startPosition,newPosition);
             }
             return false;
         }
+    }
+
+    public boolean checkEnPassant(ChessPosition startPosition, int colOffset, ChessPosition enPassant) {
+        if (enPassant == null) {
+            return false;
+        }
+        int row = startPosition.getRow();
+        int col = startPosition.getColumn();
+        ChessPosition testPosition = new ChessPosition(row, col + colOffset);
+        return testPosition.equals(enPassant);
     }
 
     public boolean inBounds(int row, int col, int rowOffset, int colOffset) {
