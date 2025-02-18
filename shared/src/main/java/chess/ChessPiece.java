@@ -83,32 +83,32 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
-        ArrayList<ChessMove> moves = null;
-        switch (piece.getPieceType()) {
-            case PieceType.KING:
+        return switch (piece.getPieceType()) {
+            case PieceType.KING -> {
                 KingMovesCalculator kingCalc = new KingMovesCalculator();
-                moves = (ArrayList<ChessMove>) kingCalc.pieceMoves(board, myPosition);
-                break;
-            case PieceType.ROOK:
+                yield (ArrayList<ChessMove>) kingCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.ROOK -> {
                 RookMovesCalculator rookCalc = new RookMovesCalculator();
-                moves = (ArrayList<ChessMove>) rookCalc.pieceMoves(board,myPosition);
-                break;
-            case PieceType.BISHOP:
+                yield (ArrayList<ChessMove>) rookCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.BISHOP -> {
                 BishopMovesCalculator bishopCalc = new BishopMovesCalculator();
-                moves = (ArrayList<ChessMove>) bishopCalc.pieceMoves(board,myPosition);
-                break;
-            case PieceType.QUEEN:
+                yield (ArrayList<ChessMove>) bishopCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.QUEEN -> {
                 QueenMovesCalculator queenCalc = new QueenMovesCalculator();
-                moves = (ArrayList<ChessMove>) queenCalc.pieceMoves(board,myPosition);
-                break;
-            case PieceType.KNIGHT:
+                yield (ArrayList<ChessMove>) queenCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.KNIGHT -> {
                 KnightMovesCalculator knightCalc = new KnightMovesCalculator();
-                moves = (ArrayList<ChessMove>) knightCalc.pieceMoves(board,myPosition);
-                break;
-            case PieceType.PAWN:
+                yield (ArrayList<ChessMove>) knightCalc.pieceMoves(board, myPosition);
+            }
+            case PieceType.PAWN -> {
                 PawnMovesCalculator pawnCalc = new PawnMovesCalculator();
-                moves = (ArrayList<ChessMove>) pawnCalc.pieceMoves(board,myPosition);
-        }
-        return moves;
+                yield (ArrayList<ChessMove>) pawnCalc.pieceMoves(board, myPosition);
+            }
+        };
+
     }
 }
