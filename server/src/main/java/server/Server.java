@@ -10,7 +10,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-
+//        Spark.post("/user", this::addUser);
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -22,4 +22,11 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
+
+//    private Object addUser(Request req, Response res) throws ResponseException {
+//        var pet = new Gson().fromJson(req.body(), Pet.class);
+//        pet = service.addPet(pet);
+//        webSocketHandler.makeNoise(pet.name(), pet.sound());
+//        return new Gson().toJson(pet);
+//    }
 }
