@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
+import model.AuthData;
 import service.*;
 import service.Service;
 import spark.*;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class Server {
@@ -56,6 +56,18 @@ public class Server {
         String authToken = req.headers("authorization");
         service.userService.logout(authToken);
         return new JsonObject();
+    }
+
+    private Object handleCreateGame(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("authorization");
+        CreateGameRequest createGameRequest = new Gson().fromJson(req.body(),CreateGameRequest.class);
+        AuthData authData = service.gameService.dataAccess.authDAO.getAuth(authToken);
+        if (authData == null) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
+        CreateGameResult createGameResult = service.gameService.createGame(createGameRequest);
+        return new Gson().toJson(createGameResult);
+
     }
 
     private Object handleLogin(Request req, Response res) throws DataAccessException {

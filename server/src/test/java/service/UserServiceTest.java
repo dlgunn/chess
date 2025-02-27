@@ -62,5 +62,20 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    void logout() throws DataAccessException {
+        RegisterResult registerResult = service.register(new RegisterRequest("me", "1234", "12@gmail.com"));
+        service.logout(registerResult.authToken());
+        assertNull(service.dataAccess.authDAO.getAuth(registerResult.authToken()));
+    }
+
+    @Test
+    void logoutThrowsException() throws DataAccessException {
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
+            service.logout("fakeAuthToken");
+        });
+        assertEquals("Error: unauthorized", ex.getMessage());
+    }
+
 
 }

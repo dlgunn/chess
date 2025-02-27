@@ -40,7 +40,7 @@ public class UserService {
         if (authData != null) {
             dataAccess.authDAO.deleteAuth(authData);
         } else {
-            throw new DataAccessException(401, "Error: Unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         }
     }
 }
