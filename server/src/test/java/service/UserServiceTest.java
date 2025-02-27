@@ -41,11 +41,13 @@ public class UserServiceTest {
 
     }
 
-    @Test void loginFail() throws DataAccessException {
+    @Test void loginThrowsException() throws DataAccessException {
         UserData userData = new UserData("me", "1234","123@gmail.com");
         RegisterResult registerResult = service.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
-        LoginResult loginResult = service.login(new LoginRequest("me", "123"));
-        assertNull(loginResult);
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
+            LoginResult registerResult2 = service.login(new LoginRequest(userData.username(), "cat"));
+        });
+        assertEquals("Error: unauthorized", ex.getMessage());
     }
 
     @Test

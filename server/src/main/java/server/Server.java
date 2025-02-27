@@ -31,8 +31,6 @@ public class Server {
         Spark.delete("/session", this::handleLogout);
         Spark.post("/session", this::handleLogin);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -54,22 +52,16 @@ public class Server {
         return new Gson().toJson(registerResult);
     }
 
-    private Object handleLogout(Request req, Response res) {
+    private Object handleLogout(Request req, Response res) throws DataAccessException {
         String authToken = req.headers("authorization");
         service.userService.logout(authToken);
         return new JsonObject();
     }
 
-    private Object handleLogin(Request req, Response res) {
+    private Object handleLogin(Request req, Response res) throws DataAccessException {
         LoginRequest loginRequest = new Gson().fromJson(req.body(),LoginRequest.class);
         LoginResult loginResult = service.userService.login(loginRequest);
         return new Gson().toJson(loginResult);
     }
 
-//    private Object addUser(Request req, Response res) throws ResponseException {
-//        var pet = new Gson().fromJson(req.body(), Pet.class);
-//        pet = service.addPet(pet);
-//        webSocketHandler.makeNoise(pet.name(), pet.sound());
-//        return new Gson().toJson(pet);
-//    }
 }

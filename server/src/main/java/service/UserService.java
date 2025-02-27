@@ -29,16 +29,18 @@ public class UserService {
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
         UserData userData = dataAccess.userDAO.getUser(loginRequest.username());
 
-        if (!Objects.equals(userData.password(), loginRequest.password())) {
+        if (userData == null || !Objects.equals(userData.password(), loginRequest.password())) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
         AuthData authData = dataAccess.authDAO.createAuth(new AuthData(null, userData.username()));
         return new LoginResult(userData.username(), authData.authToken());
     }
-    public void logout(String authToken) {
+    public void logout(String authToken) throws DataAccessException {
         AuthData authData = dataAccess.authDAO.getAuth(authToken);
         if (authData != null) {
             dataAccess.authDAO.deleteAuth(authData);
+        } else {
+            throw new DataAccessException(401, "Error: Unauthorized");
         }
     }
 }
