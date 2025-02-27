@@ -13,11 +13,11 @@ public class MemoryAuthDAO implements AuthDAO {
         return authData;
     }
     public AuthData getAuth(String authToken) {
-        throw new UnsupportedOperationException("Not implemented");
+        return allAuthData.get(authToken);
     }
-    public AuthData deleteAuth(AuthData authdata) {
-        throw new UnsupportedOperationException("Not implemented");
-
+    public AuthData deleteAuth(AuthData authData) {
+        allAuthData.remove(authData.authToken());
+        return authData;
     }
     public static String generateToken() {
         return UUID.randomUUID().toString();
