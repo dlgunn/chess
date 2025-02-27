@@ -5,8 +5,7 @@ import com.google.gson.JsonObject;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
-import service.RegisterRequest;
-import service.RegisterResult;
+import service.*;
 import service.Service;
 import spark.*;
 
@@ -62,7 +61,9 @@ public class Server {
     }
 
     private Object handleLogin(Request req, Response res) {
-        return null;
+        LoginRequest loginRequest = new Gson().fromJson(req.body(),LoginRequest.class);
+        LoginResult loginResult = service.userService.login(loginRequest);
+        return new Gson().toJson(loginResult);
     }
 
 //    private Object addUser(Request req, Response res) throws ResponseException {
