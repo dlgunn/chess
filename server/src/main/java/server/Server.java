@@ -1,8 +1,21 @@
 package server;
 
+import com.google.gson.Gson;
+import dataaccess.DataAccess;
+import dataaccess.MemoryDataAccess;
+import service.RegisterRequest;
+import service.RegisterResult;
+import service.Service;
 import spark.*;
 
 public class Server {
+    public Service service;
+
+    public Server() {
+        DataAccess dataAccess = new MemoryDataAccess();
+        service = new Service(dataAccess);
+    }
+
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -21,6 +34,12 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private Object handleRegister(Request req, Response res) { // probably needs to throw an exception
+        RegisterRequest registerRequest = new Gson().fromJson(req.body(), RegisterRequest.class);
+        RegisterResult registerResult = service.userService.register(registerRequest);
+        return new Gson().toJson(registerResult);
     }
 
 //    private Object addUser(Request req, Response res) throws ResponseException {
