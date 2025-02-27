@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 
@@ -14,12 +15,8 @@ public class UserService {
     }
 
 
-    public RegisterResult register(RegisterRequest registerRequest) {
-        UserData userData = dataAccess.userDAO.getUser(registerRequest.username());
-        if (userData != null) {
-            return null;
-        }
-        userData = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
+    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
+        UserData userData = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
         dataAccess.userDAO.createUser(userData);
         AuthData authData = dataAccess.authDAO.createAuth(new AuthData(null, userData.username()));
         return new RegisterResult(authData.username(), authData.authToken());
