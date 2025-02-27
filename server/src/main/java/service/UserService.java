@@ -5,7 +5,7 @@ import model.AuthData;
 import model.UserData;
 
 public class UserService {
-    private final DataAccess dataAccess;
+    public final DataAccess dataAccess;
 
     public UserService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
@@ -22,6 +22,18 @@ public class UserService {
         AuthData authData = dataAccess.authDAO.createAuth(new AuthData(null, userData.username()));
         return new RegisterResult(authData.username(), authData.authToken());
     }
-    //public LoginResult login(LoginRequest loginRequest) {}
+
+    public void clear() {
+        dataAccess.clear();
+    }
+
+    public LoginResult login(LoginRequest loginRequest) {
+        UserData userData = dataAccess.userDAO.getUser(loginRequest.username());
+        if (userData == null) {
+            return null;
+        }
+        AuthData authData = dataAccess.authDAO.createAuth(new AuthData(null, userData.username()));
+        return new LoginResult(userData.username(), authData.authToken());
+    }
     //public void logout(LogoutRequest logoutRequest) {}
 }
