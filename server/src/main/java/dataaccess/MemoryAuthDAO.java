@@ -22,4 +22,9 @@ public class MemoryAuthDAO implements AuthDAO {
     public static String generateToken() {
         return UUID.randomUUID().toString();
     }
+
+    @Override
+    public void clear() {
+
+    }
 }
