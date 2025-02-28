@@ -17,7 +17,7 @@ public class GameService {
             throw new DataAccessException(401, "Error: bad request");
         }
         GameData gameData = this.dataAccess.gameDAO.createGame(new GameData(0,null,null, createGameRequest.gameName(), new ChessGame()));
-        return new CreateGameResult(gameData.GameID());
+        return new CreateGameResult(gameData.gameID());
     }
 
     public ListGamesResult listGames() {
@@ -42,6 +42,6 @@ public class GameService {
         if (existingUsername != null) {
             throw new DataAccessException(403, "Error: already taken");
         }
-        dataAccess.gameDAO.updateGame(new GameData(gameData.GameID(), whiteUsername,blackUsername, gameData.gameName(), gameData.game()));
+        dataAccess.gameDAO.updateGame(new GameData(gameData.gameID(), whiteUsername,blackUsername, gameData.gameName(), gameData.game()));
     }
 }

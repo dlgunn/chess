@@ -34,6 +34,7 @@ public class Server {
         Spark.post("/game", this::handleCreateGame);
         Spark.get("/game", this::handleListGames);
         Spark.put("/game", this::handleJoinGame);
+        Spark.delete("/db", this::handleClear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
         Spark.awaitInitialization();
@@ -48,6 +49,11 @@ public class Server {
     private void exceptionHandler(DataAccessException ex, Request req, Response res) {
         res.status(ex.StatusCode());
         res.body(new Gson().toJson(Map.of("message", ex.getMessage())));
+    }
+
+    private Object handleClear(Request req, Response res) {
+        service.clear();
+        return new JsonObject();
     }
 
     private Object handleRegister(Request req, Response res) throws DataAccessException { // probably needs to throw an exception

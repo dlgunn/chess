@@ -1,12 +1,10 @@
 package dataaccess;
 
-import model.AuthData;
 import model.GameData;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class MemoryGameDAO implements GameDAO {
     int id = 0;
@@ -31,7 +29,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public void updateGame(GameData gameData) {
-        allGameData.put(gameData.GameID(),gameData);
+        allGameData.put(gameData.gameID(),gameData);
     }
 
     @Override
