@@ -2,7 +2,6 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import dataaccess.AuthDAO;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
@@ -70,7 +69,7 @@ public class Server {
 
     private Object handleCreateGame(Request req, Response res) throws DataAccessException {
         authorize(req);
-        CreateGameRequest createGameRequest = new Gson().fromJson(req.body(),CreateGameRequest.class);
+        CreateGameRequest createGameRequest = new Gson().fromJson(req.body(), CreateGameRequest.class);
         CreateGameResult createGameResult = service.gameService.createGame(createGameRequest);
         return new Gson().toJson(createGameResult);
 
@@ -84,13 +83,13 @@ public class Server {
 
     private Object handleJoinGame(Request req, Response res) throws DataAccessException {
         AuthData authData = authorize(req);
-        JoinGameRequest joinGameRequest = new Gson().fromJson(req.body(),JoinGameRequest.class);
+        JoinGameRequest joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
         service.gameService.joinGame(joinGameRequest, authData.username());
         return new JsonObject();
     }
 
     private Object handleLogin(Request req, Response res) throws DataAccessException {
-        LoginRequest loginRequest = new Gson().fromJson(req.body(),LoginRequest.class);
+        LoginRequest loginRequest = new Gson().fromJson(req.body(), LoginRequest.class);
         LoginResult loginResult = service.userService.login(loginRequest);
         return new Gson().toJson(loginResult);
     }

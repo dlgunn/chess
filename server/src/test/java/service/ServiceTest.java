@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -27,34 +26,36 @@ public class ServiceTest {
     @Test
     void registerUser() throws DataAccessException {
 
-        UserData userData = new UserData("me", "1234","123@gmail.com");
+        UserData userData = new UserData("me", "1234", "123@gmail.com");
         RegisterResult registerResult = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
-        assert(Objects.equals(registerResult.username(), "me"));
+        assert (Objects.equals(registerResult.username(), "me"));
 
     }
 
     @Test
     void registerUserThrowsException() throws DataAccessException {
-        UserData userData = new UserData("me2", "1234","123@gmail.com");
-        RegisterResult registerResult = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
+        UserData userData = new UserData("me2", "1234", "123@gmail.com");
+        service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
         assertThrows(DataAccessException.class, () -> {
-            RegisterResult registerResult2 = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
+            service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
         });
     }
 
-    @Test void login() throws DataAccessException {
-        UserData userData = new UserData("me3", "1234","123@gmail.com");
-        RegisterResult registerResult = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
+    @Test
+    void login() throws DataAccessException {
+        UserData userData = new UserData("me3", "1234", "123@gmail.com");
+        service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
         LoginResult loginResult = service.userService.login(new LoginRequest("me3", "1234"));
         assertEquals("me3", loginResult.username());
 
     }
 
-    @Test void loginThrowsException() throws DataAccessException {
-        UserData userData = new UserData("me", "1234","123@gmail.com");
-        RegisterResult registerResult = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
+    @Test
+    void loginThrowsException() throws DataAccessException {
+        UserData userData = new UserData("me", "1234", "123@gmail.com");
+        service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
         DataAccessException ex = assertThrows(DataAccessException.class, () -> {
-            LoginResult registerResult2 =  service.userService.login(new LoginRequest(userData.username(), "cat"));
+            service.userService.login(new LoginRequest(userData.username(), "cat"));
         });
         assertEquals("Error: unauthorized", ex.getMessage());
     }
@@ -79,7 +80,7 @@ public class ServiceTest {
     }
 
     @Test
-    void logoutThrowsException() throws DataAccessException {
+    void logoutThrowsException() {
         DataAccessException ex = assertThrows(DataAccessException.class, () -> {
             service.userService.logout("fakeAuthToken");
         });
@@ -88,12 +89,12 @@ public class ServiceTest {
 
     @Test
     void createGame() throws DataAccessException {
-        RegisterResult registerResult = service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
+        service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
         service.gameService.createGame(new CreateGameRequest("yooo"));
     }
 
     @Test
-    void createGameThrowsException() throws DataAccessException {
+    void createGameThrowsException() {
         DataAccessException ex = assertThrows(DataAccessException.class, () -> {
             service.gameService.createGame(new CreateGameRequest(null));
         });
@@ -102,16 +103,16 @@ public class ServiceTest {
 
     @Test
     void joinGame() throws DataAccessException {
-        RegisterResult registerResult = service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
+        service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
         service.gameService.createGame(new CreateGameRequest("yooo"));
-        service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE,1), "me");
+        service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "me");
         Iterator<GameData> iterator = service.gameService.listGames().games().iterator();
         GameData gameData = iterator.next();
         assertEquals("me", gameData.whiteUsername());
     }
 
     @Test
-    void joinGameThrowsException() throws DataAccessException {
+    void joinGameThrowsException() {
         DataAccessException ex = assertThrows(DataAccessException.class, () -> {
             service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello");
         });

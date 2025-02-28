@@ -12,7 +12,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public GameData createGame(GameData gameData) {
-        gameData = new GameData(++id, gameData.whiteUsername(),gameData.blackUsername(), gameData.gameName(), gameData.game());
+        gameData = new GameData(++id, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
         allGameData.put(id, gameData);
         return gameData;
     }
@@ -29,7 +29,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public void updateGame(GameData gameData) {
-        allGameData.put(gameData.gameID(),gameData);
+        allGameData.put(gameData.gameID(), gameData);
     }
 
     @Override

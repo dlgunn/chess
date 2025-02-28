@@ -22,10 +22,6 @@ public class UserService {
         return new RegisterResult(authData.username(), authData.authToken());
     }
 
-    public void clear() {
-        dataAccess.clear();
-    }
-
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
         UserData userData = dataAccess.userDAO.getUser(loginRequest.username());
 
@@ -35,6 +31,7 @@ public class UserService {
         AuthData authData = dataAccess.authDAO.createAuth(new AuthData(null, userData.username()));
         return new LoginResult(userData.username(), authData.authToken());
     }
+
     public void logout(String authToken) throws DataAccessException {
         AuthData authData = dataAccess.authDAO.getAuth(authToken);
         if (authData != null) {
