@@ -1,12 +1,16 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
+import model.GameData;
 import model.UserData;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ServiceTest {
     static Service service = new Service(new MemoryDataAccess());
 
-    @BeforeAll
-    static void reset() {
+    @BeforeEach
+    void reset() {
         service.clear();
     }
 
@@ -31,7 +35,7 @@ public class ServiceTest {
 
     @Test
     void registerUserThrowsException() throws DataAccessException {
-        UserData userData = new UserData("me", "1234","123@gmail.com");
+        UserData userData = new UserData("me2", "1234","123@gmail.com");
         RegisterResult registerResult = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
         assertThrows(DataAccessException.class, () -> {
             RegisterResult registerResult2 = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
@@ -39,10 +43,10 @@ public class ServiceTest {
     }
 
     @Test void login() throws DataAccessException {
-        UserData userData = new UserData("me", "1234","123@gmail.com");
+        UserData userData = new UserData("me3", "1234","123@gmail.com");
         RegisterResult registerResult = service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
-        LoginResult loginResult = service.userService.login(new LoginRequest("me", "1234"));
-        assertEquals("me", loginResult.username());
+        LoginResult loginResult = service.userService.login(new LoginRequest("me3", "1234"));
+        assertEquals("me3", loginResult.username());
 
     }
 
@@ -88,5 +92,22 @@ public class ServiceTest {
         service.gameService.createGame(new CreateGameRequest("yooo"));
     }
 
+    @Test
+    void createGameThrowsException() throws DataAccessException {
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
+            service.gameService.createGame(new CreateGameRequest(null));
+        });
+        assertEquals("Error: bad request", ex.getMessage());
+    }
+
+    @Test
+    void joinGame() throws DataAccessException {
+        RegisterResult registerResult = service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
+        service.gameService.createGame(new CreateGameRequest("yooo"));
+        service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE,1), "me");
+        Iterator<GameData> iterator = service.gameService.listGames().games().iterator();
+        GameData gameData = iterator.next();
+        assertEquals("me", gameData.whiteUsername());
+    }
 
 }
