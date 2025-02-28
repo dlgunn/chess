@@ -110,4 +110,12 @@ public class ServiceTest {
         assertEquals("me", gameData.whiteUsername());
     }
 
+    @Test
+    void joinGameThrowsException() throws DataAccessException {
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
+            service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello");
+        });
+        assertEquals("Error: bad request", ex.getMessage());
+    }
+
 }
