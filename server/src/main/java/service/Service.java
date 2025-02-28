@@ -10,6 +10,7 @@ public class Service {
     public Service(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
         userService = new UserService(dataAccess);
+        gameService = new GameService(dataAccess);
     }
 
     public void clear() {

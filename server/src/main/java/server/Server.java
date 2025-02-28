@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dataaccess.AuthDAO;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
@@ -30,6 +31,9 @@ public class Server {
         Spark.post("/user", this::handleRegister);
         Spark.delete("/session", this::handleLogout);
         Spark.post("/session", this::handleLogin);
+        Spark.post("/game", this::handleCreateGame);
+        Spark.get("/game", this::handleListGames);
+        Spark.put("/game", this::handleJoinGame);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
         Spark.awaitInitialization();
@@ -59,21 +63,40 @@ public class Server {
     }
 
     private Object handleCreateGame(Request req, Response res) throws DataAccessException {
-        String authToken = req.headers("authorization");
+        authorize(req);
         CreateGameRequest createGameRequest = new Gson().fromJson(req.body(),CreateGameRequest.class);
-        AuthData authData = service.gameService.dataAccess.authDAO.getAuth(authToken);
-        if (authData == null) {
-            throw new DataAccessException(401, "Error: unauthorized");
-        }
         CreateGameResult createGameResult = service.gameService.createGame(createGameRequest);
         return new Gson().toJson(createGameResult);
 
+    }
+
+    private Object handleListGames(Request req, Response res) throws DataAccessException {
+        authorize(req);
+        ListGamesResult listGamesResult = service.gameService.listGames();
+        return new Gson().toJson(listGamesResult);
+    }
+
+    private Object handleJoinGame(Request req, Response res) throws DataAccessException {
+        AuthData authData = authorize(req);
+        JoinGameRequest joinGameRequest = new Gson().fromJson(req.body(),JoinGameRequest.class);
+        service.gameService.joinGame(joinGameRequest, authData.username());
+        return new JsonObject();
     }
 
     private Object handleLogin(Request req, Response res) throws DataAccessException {
         LoginRequest loginRequest = new Gson().fromJson(req.body(),LoginRequest.class);
         LoginResult loginResult = service.userService.login(loginRequest);
         return new Gson().toJson(loginResult);
+    }
+
+    private AuthData authorize(Request req) throws DataAccessException {
+        String authToken = req.headers("authorization");
+        AuthData authData = service.gameService.dataAccess.authDAO.getAuth(authToken);
+        if (authData == null) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        } else {
+            return authData;
+        }
     }
 
 }

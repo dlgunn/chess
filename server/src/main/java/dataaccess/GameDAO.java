@@ -8,7 +8,7 @@ public interface GameDAO {
     GameData createGame(GameData gamedata);
     GameData getGame(int gameID);
     Collection<GameData> listGames();
-    void updateGame(int gameID);
+    void updateGame(GameData gameData);
     void clear();
 
 }
