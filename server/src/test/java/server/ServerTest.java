@@ -1,8 +1,7 @@
-package Server;
+package server;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import server.Server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
