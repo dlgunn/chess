@@ -112,11 +112,32 @@ public class ServiceTest {
     }
 
     @Test
+    void joinGameBlack() throws DataAccessException {
+        service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
+        service.gameService.createGame(new CreateGameRequest("yooo"));
+        service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.BLACK, 1), "me");
+        Iterator<GameData> iterator = service.gameService.listGames().games().iterator();
+        GameData gameData = iterator.next();
+        assertEquals("me", gameData.blackUsername());
+    }
+
+    @Test
     void joinGameThrowsException() {
         DataAccessException ex = assertThrows(DataAccessException.class, () -> {
             service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello");
         });
         assertEquals("Error: bad request", ex.getMessage());
+    }
+
+    @Test
+    void joinGameThrowsExceptionAlreadyTaken() throws DataAccessException {
+        service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
+        service.gameService.createGame(new CreateGameRequest("yooo"));
+        service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "me");
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
+            service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello");
+        });
+        assertEquals("Error: already taken", ex.getMessage());
     }
 
 }
