@@ -46,7 +46,7 @@ public class Server {
     }
 
     private void exceptionHandler(DataAccessException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.statusCode());
         res.body(new Gson().toJson(Map.of("message", ex.getMessage())));
     }
 
