@@ -44,7 +44,8 @@ public class KingMovesCalculator extends PieceMovesCalculator {
         if (startPosition.getRow() == castleRow && startPosition.getColumn() == 5) {
             ChessPiece potentialRook = board.getPiece(new ChessPosition(castleRow,rookColumn));
             ChessPosition sidePosition = new ChessPosition(startPosition.getRow(),startPosition.getColumn()+direction);
-            if (board.getPiece(sidePosition)==null && potentialRook != null && potentialRook.getPieceType() == ChessPiece.PieceType.ROOK && potentialRook.getTeamColor() == color) {
+            if (board.getPiece(sidePosition)==null && potentialRook != null && potentialRook.getPieceType() == ChessPiece.PieceType.ROOK
+                    && potentialRook.getTeamColor() == color) {
                 this.addPosition(0, 2*direction, board, startPosition,moves);
             }
         }

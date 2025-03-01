@@ -80,7 +80,8 @@ public class ChessBoard {
         if (promotionPieceType != null) {
             addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(),promotionPieceType));
         } else {
-            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && Math.abs(move.getStartPosition().getRow() - move.getEndPosition().getRow()) > 1) {
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                    Math.abs(move.getStartPosition().getRow() - move.getEndPosition().getRow()) > 1) {
                 this.enPassant = move.getEndPosition();
             } else {
                 this.enPassant = null;

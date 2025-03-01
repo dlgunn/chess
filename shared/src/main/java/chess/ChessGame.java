@@ -61,7 +61,8 @@ public class ChessGame {
         ArrayList<ChessMove> returnMoves = new ArrayList<>();
         ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(this.board,startPosition);
         for (ChessMove move : moves) {
-            if (piece.getPieceType() == ChessPiece.PieceType.KING && Math.abs(move.getStartPosition().getColumn()-move.getEndPosition().getColumn())>1) {
+            if (piece.getPieceType() == ChessPiece.PieceType.KING &&
+                    Math.abs(move.getStartPosition().getColumn()-move.getEndPosition().getColumn())>1) {
                 castle(move,returnMoves,color);
             } else {
                 board = new ChessBoard(this.board);
