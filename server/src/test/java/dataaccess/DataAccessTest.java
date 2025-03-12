@@ -10,7 +10,7 @@ public class DataAccessTest {
     DataAccess dataAccess = new MemoryDataAccess();
 
     @BeforeEach
-    public void reset() {
+    public void reset() throws DataAccessException {
         dataAccess.clear();
     }
 
