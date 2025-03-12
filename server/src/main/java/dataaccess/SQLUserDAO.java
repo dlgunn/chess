@@ -17,10 +17,9 @@ public class SQLUserDAO implements UserDAO {
             throw new DataAccessException(403, "Error: already taken");
         }
         var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
-        var json = new Gson().toJson(userData);
         String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
+        var json = new Gson().toJson(new UserData(userData.username(),hashedPassword, userData.email()));
         var id = SQLDataAccess.executeUpdate(statement, userData.username(), hashedPassword, userData.email(), json);
-
         return userData;
     }
 
@@ -44,8 +43,7 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public boolean checkPassword(String givenPassword, String databasePassword) {
-        String hashedPassword = BCrypt.hashpw(givenPassword, BCrypt.gensalt());
-        return hashedPassword.equals(databasePassword);
+        return BCrypt.checkpw(givenPassword, databasePassword);
     }
 
     private UserData readUserData(ResultSet rs) throws SQLException {
