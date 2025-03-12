@@ -2,6 +2,9 @@ package dataaccess;
 
 import java.sql.SQLException;
 
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
+
 public class SqlDataAccess extends DataAccess {
 
     public SqlDataAccess() throws DataAccessException {
@@ -41,6 +44,29 @@ public class SqlDataAccess extends DataAccess {
             }
         } catch (SQLException ex) {
             throw new DataAccessException(500, String.format("Error: %s", ex.getMessage()));
+        }
+    }
+
+
+    public static int executeUpdate(String statement, Object... params) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                }
+                ps.executeUpdate();
+
+                var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+
+                return 0;
+            }
+        } catch (DataAccessException | SQLException e) {
+            throw new DataAccessException(500, e.getMessage());
         }
     }
 }

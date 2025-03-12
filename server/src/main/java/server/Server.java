@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
+import dataaccess.SqlDataAccess;
 import model.AuthData;
 import service.*;
 import service.Service;
@@ -16,7 +16,12 @@ public class Server {
     public Service service;
 
     public Server() {
-        DataAccess dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess = null;
+        try {
+            dataAccess = new SqlDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         service = new Service(dataAccess);
     }
 

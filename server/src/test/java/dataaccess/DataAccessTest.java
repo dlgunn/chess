@@ -1,4 +1,5 @@
 package dataaccess;
+import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,14 @@ public class DataAccessTest {
     void createUser() throws DataAccessException {
         UserData userData = new UserData("me", "12345","email");
         assertEquals(userData, dataAccess.userDAO.createUser(userData));
+    }
+
+    @Test
+    void createAuthData() throws DataAccessException {
+        DataAccess tempDataAccess = new SqlDataAccess();
+        AuthData authData = new AuthData("random", "myself");
+        AuthData returnAuthData = tempDataAccess.authDAO.createAuth(authData);
+        assertEquals("myself", returnAuthData.username());
     }
 
     @Test
