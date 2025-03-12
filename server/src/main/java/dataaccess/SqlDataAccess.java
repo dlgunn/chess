@@ -2,9 +2,9 @@ package dataaccess;
 
 import java.sql.SQLException;
 
-public class MySqlDataAccess extends DataAccess {
+public class SqlDataAccess extends DataAccess {
 
-    public MySqlDataAccess() throws DataAccessException {
+    public SqlDataAccess() throws DataAccessException {
         authDAO = new SQLAuthDAO();
         userDAO = new SQLUserDAO();
         gameDAO = new SQLGameDAO();
@@ -13,9 +13,23 @@ public class MySqlDataAccess extends DataAccess {
 
     private final String[] createStatements = {
             """
-            
+            CREATE TABLE IF NOT EXISTS authData (
+                `id` int NOT NULL AUTO_INCREMENT,
+                `authToken` varchar(255) NOT NULL,
+                `username` varchar(255) NOT NULL,
+                `json` TEXT DEFAULT NULL,
+                PRIMARY KEY (`id`))
             """
     };
+
+//    CREATE TABLE IF NOT EXISTS userData (
+//                `id` int NOT NULL AUTO_INCREMENT,
+//                `username` varchar(255) NOT NULL,
+//                `password` varchar(255) NOT NULL,
+//                `email` varchar(255) NOT NULL,
+//                `json` TEXT DEFAULT NULL,
+//    PRIMARY KEY (`id`))
+//
 
     public void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
