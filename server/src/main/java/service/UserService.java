@@ -25,7 +25,7 @@ public class UserService {
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
         UserData userData = dataAccess.userDAO.getUser(loginRequest.username());
 
-        if (userData == null || !Objects.equals(userData.password(), loginRequest.password())) {
+        if (userData == null || !dataAccess.userDAO.checkPassword(loginRequest.password(), userData.password())) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
         AuthData authData = dataAccess.authDAO.createAuth(new AuthData(null, userData.username()));
