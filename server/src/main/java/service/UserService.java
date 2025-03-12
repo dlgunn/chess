@@ -5,8 +5,6 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 
-import java.util.Objects;
-
 public class UserService {
     public final DataAccess dataAccess;
 

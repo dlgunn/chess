@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DataAccessTest {
-    DataAccess dataAccess = new MemoryDataAccess();
+    final DataAccess dataAccess = new MemoryDataAccess();
 
     @BeforeEach
     public void reset() throws DataAccessException {
@@ -30,9 +30,7 @@ public class DataAccessTest {
 
     @Test
     void createUserThrowsException() {
-        Exception ex = assertThrows(DataAccessException.class, () -> {
-            dataAccess.userDAO.createUser(new UserData(null, null, null));
-        });
+        Exception ex = assertThrows(DataAccessException.class, () -> dataAccess.userDAO.createUser(new UserData(null, null, null)));
         assertEquals("Error: bad request", ex.getMessage());
     }
 

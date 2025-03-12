@@ -19,7 +19,7 @@ public class SQLUserDAO implements UserDAO {
         var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
         String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
         var json = new Gson().toJson(new UserData(userData.username(),hashedPassword, userData.email()));
-        var id = SQLDataAccess.executeUpdate(statement, userData.username(), hashedPassword, userData.email(), json);
+        SQLDataAccess.executeUpdate(statement, userData.username(), hashedPassword, userData.email(), json);
         return userData;
     }
 

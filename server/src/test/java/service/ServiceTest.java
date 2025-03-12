@@ -36,9 +36,7 @@ public class ServiceTest {
     void registerUserThrowsException() throws DataAccessException {
         UserData userData = new UserData("me2", "1234", "123@gmail.com");
         service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
-        assertThrows(DataAccessException.class, () -> {
-            service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
-        });
+        assertThrows(DataAccessException.class, () -> service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email())));
     }
 
     @Test
@@ -54,9 +52,7 @@ public class ServiceTest {
     void loginThrowsException() throws DataAccessException {
         UserData userData = new UserData("me", "1234", "123@gmail.com");
         service.userService.register(new RegisterRequest(userData.username(), userData.password(), userData.email()));
-        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
-            service.userService.login(new LoginRequest(userData.username(), "cat"));
-        });
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> service.userService.login(new LoginRequest(userData.username(), "cat")));
         assertEquals("Error: unauthorized", ex.getMessage());
     }
 
@@ -81,9 +77,7 @@ public class ServiceTest {
 
     @Test
     void logoutThrowsException() {
-        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
-            service.userService.logout("fakeAuthToken");
-        });
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> service.userService.logout("fakeAuthToken"));
         assertEquals("Error: unauthorized", ex.getMessage());
     }
 
@@ -95,9 +89,7 @@ public class ServiceTest {
 
     @Test
     void createGameThrowsException() {
-        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
-            service.gameService.createGame(new CreateGameRequest(null));
-        });
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> service.gameService.createGame(new CreateGameRequest(null)));
         assertEquals("Error: bad request", ex.getMessage());
     }
 
@@ -123,9 +115,7 @@ public class ServiceTest {
 
     @Test
     void joinGameThrowsException() {
-        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
-            service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello");
-        });
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello"));
         assertEquals("Error: bad request", ex.getMessage());
     }
 
@@ -134,9 +124,7 @@ public class ServiceTest {
         service.userService.register(new RegisterRequest("me", "1234", "12@gmail.com"));
         service.gameService.createGame(new CreateGameRequest("yooo"));
         service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "me");
-        DataAccessException ex = assertThrows(DataAccessException.class, () -> {
-            service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello");
-        });
+        DataAccessException ex = assertThrows(DataAccessException.class, () -> service.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.WHITE, 1), "hello"));
         assertEquals("Error: already taken", ex.getMessage());
     }
 

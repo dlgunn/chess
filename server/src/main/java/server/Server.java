@@ -16,7 +16,7 @@ public class Server {
     public Service service;
 
     public Server() {
-        DataAccess dataAccess = null;
+        DataAccess dataAccess;
         try {
             dataAccess = new SQLDataAccess();
         } catch (DataAccessException e) {

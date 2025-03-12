@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ServerTest {
-    Server server = new Server();
+    final Server server = new Server();
 
     @AfterEach
     public void reset() {

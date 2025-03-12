@@ -14,7 +14,7 @@ public class SQLAuthDAO implements AuthDAO {
         authData = new AuthData(authToken, authData.username());
         var statement = "INSERT INTO authData (authToken, username, json) VALUES (?, ?, ?)";
         var json = new Gson().toJson(authData);
-        var id = SQLDataAccess.executeUpdate(statement, authData.authToken(), authData.username(), json);
+        SQLDataAccess.executeUpdate(statement, authData.authToken(), authData.username(), json);
         return authData;
     }
 

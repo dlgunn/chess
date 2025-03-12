@@ -66,7 +66,7 @@ public class SQLGameDAO implements GameDAO {
         var statement = "UPDATE gameData " +
                 "SET whiteUsername = ?, blackUsername = ?, gameName = ?, json = ? WHERE id = ?";
         var json = new Gson().toJson(gameData);
-        var id = SQLDataAccess.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), json, gameData.gameID());
+        SQLDataAccess.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), json, gameData.gameID());
     }
 
     @Override
