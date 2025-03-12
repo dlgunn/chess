@@ -24,7 +24,7 @@ public class SQLDataAccess extends DataAccess {
                 PRIMARY KEY (`id`))
             """,
             """
-                CREATE TABLE IF NOT EXISTS gameDATA (
+                CREATE TABLE IF NOT EXISTS gameData (
                 `id` int NOT NULL AUTO_INCREMENT,
                 `whiteUsername` varchar(255) DEFAULT NULL,
                 `blackUsername` varchar(255) DEFAULT NULL,
