@@ -21,8 +21,16 @@ public class SqlDataAccess extends DataAccess {
                 `authToken` varchar(255) NOT NULL,
                 `username` varchar(255) NOT NULL,
                 `json` TEXT DEFAULT NULL,
-                PRIMARY KEY (`id`))
-            """
+                PRIMARY KEY (`id`));
+               \s
+            CREATE TABLE IF NOT EXISTS gameDATA(
+                `id` int NOT NULL AUTO_INCREMENT,
+                `whiteUsername` varchar(255) NOT NULL,
+                `blackUsername` varchar(255) NOT NULL,
+                `gameName` varchar(255) NOT NULL,
+                `json` TEXT DEFAULT NULL,
+                PRIMARY KEY (`id`));
+           \s"""
     };
 
 //    CREATE TABLE IF NOT EXISTS userData (

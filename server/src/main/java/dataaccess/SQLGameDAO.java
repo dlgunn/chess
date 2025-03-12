@@ -1,14 +1,12 @@
 package dataaccess;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
 import model.GameData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class SQLGameDAO implements GameDAO {
     @Override
@@ -44,17 +42,34 @@ public class SQLGameDAO implements GameDAO {
     }
 
     @Override
-    public Collection<GameData> listGames() {
-        return List.of();
+    public Collection<GameData> listGames() throws DataAccessException {
+        var result = new ArrayList<GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, json FROM gameData";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        result.add(readGameData(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(500,  e.getMessage());
+        }
+        return result;
     }
 
     @Override
-    public void updateGame(GameData gameData) {
-
+    public void updateGame(GameData gameData) throws DataAccessException {
+        var statement = "UPDATE gameData " +
+                "SET whiteUsername = ?, blackUsername = ?, gameName = ?, json = ? WHERE id = ?";
+        var json = new Gson().toJson(gameData);
+        var id = SqlDataAccess.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), json, gameData.gameID());
     }
 
     @Override
-    public void clear() {
-
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE gameData";
+        SqlDataAccess.executeUpdate(statement);
     }
 }
