@@ -5,7 +5,7 @@ public class DataAccess {
     public AuthDAO authDAO;
     public UserDAO userDAO;
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         gameDAO.clear();
         authDAO.clear();
         userDAO.clear();
