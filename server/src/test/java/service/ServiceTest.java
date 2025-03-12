@@ -19,7 +19,7 @@ public class ServiceTest {
     static Service service = new Service(new MemoryDataAccess());
 
     @BeforeEach
-    void reset() {
+    void reset() throws DataAccessException {
         service.clear();
     }
 
