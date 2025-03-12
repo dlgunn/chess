@@ -1,5 +1,7 @@
 package dataaccess;
+import chess.ChessGame;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -81,6 +83,73 @@ public class DataAccessTest {
         dataAccess.clear();
         assertNull(dataAccess.userDAO.getUser("me"));
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"memory", "SQL"})
+    void getAuth(String type) throws DataAccessException {
+        setDataAccess(type);
+        AuthData authData = new AuthData(null, "username");
+        authData = dataAccess.authDAO.createAuth(authData);
+        AuthData retrieved = dataAccess.authDAO.getAuth(authData.authToken());
+        assertEquals(authData,retrieved);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"memory", "SQL"})
+    void getAuthFail(String type) throws DataAccessException {
+        setDataAccess(type);
+        AuthData authData = new AuthData(null, "username");
+        authData = dataAccess.authDAO.createAuth(authData);
+        AuthData retrieved = dataAccess.authDAO.getAuth("wrongAuthToken");
+        assertNull(retrieved);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"memory", "SQL"})
+    void deleteAuth(String type) throws DataAccessException {
+        setDataAccess(type);
+        AuthData authData = new AuthData(null, "username");
+        authData = dataAccess.authDAO.createAuth(authData);
+        dataAccess.authDAO.deleteAuth(authData);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"memory", "SQL"})
+    void deleteAuthFail(String type) throws DataAccessException {
+        setDataAccess(type);
+        AuthData authData = new AuthData(null, "username");
+        authData = dataAccess.authDAO.createAuth(authData);
+        dataAccess.authDAO.deleteAuth(new AuthData("badAuth","username"));
+        AuthData retrieved = dataAccess.authDAO.getAuth(authData.authToken());
+        assertEquals(authData,retrieved);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"memory", "SQL"})
+    void createGame(String type) throws DataAccessException {
+        setDataAccess(type);
+        GameData gameData = dataAccess.gameDAO.createGame(new GameData(0,"name","name2","gameName",new ChessGame()));
+        assertEquals("gameName",gameData.gameName());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"memory", "SQL"})
+    void createGameFail(String type) throws DataAccessException {
+        setDataAccess(type);
+        assertThrows(NullPointerException.class, () -> dataAccess.gameDAO.createGame(null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"memory", "SQL"})
+    void getGame(String type) throws DataAccessException {
+        setDataAccess(type);
+        GameData gameData = dataAccess.gameDAO.createGame(new GameData(0,"name","name2","gameName",new ChessGame()));
+        GameData retrieved = dataAccess.gameDAO.getGame(gameData.gameID());
+        assertEquals(gameData.gameName(),retrieved.gameName());
+    }
+
+
+
 
 
 }
