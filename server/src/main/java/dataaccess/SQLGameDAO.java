@@ -11,10 +11,12 @@ import java.util.Collection;
 public class SQLGameDAO implements GameDAO {
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
-        var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, json)";
+        var statement = "INSERT INTO gameData (whiteUsername, blackUsername, gameName, json) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(gameData);
-        var id = SqlDataAccess.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), json);
-        return new GameData(id,gameData.whiteUsername(),gameData.blackUsername(), gameData.gameName(), gameData.game());
+        var id = SQLDataAccess.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), json);
+        GameData newGameData = new GameData(id,gameData.whiteUsername(),gameData.blackUsername(), gameData.gameName(), gameData.game());
+        updateGame(newGameData);
+        return newGameData;
     }
 
     @Override
@@ -64,12 +66,12 @@ public class SQLGameDAO implements GameDAO {
         var statement = "UPDATE gameData " +
                 "SET whiteUsername = ?, blackUsername = ?, gameName = ?, json = ? WHERE id = ?";
         var json = new Gson().toJson(gameData);
-        var id = SqlDataAccess.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), json, gameData.gameID());
+        var id = SQLDataAccess.executeUpdate(statement, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), json, gameData.gameID());
     }
 
     @Override
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE gameData";
-        SqlDataAccess.executeUpdate(statement);
+        SQLDataAccess.executeUpdate(statement);
     }
 }

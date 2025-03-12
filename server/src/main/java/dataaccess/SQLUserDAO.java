@@ -17,7 +17,7 @@ public class SQLUserDAO implements UserDAO {
         }
         var statement = "INSERT INTO userData (username, password, email, json) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(userData);
-        var id = SqlDataAccess.executeUpdate(statement, userData.username(), userData.password(), userData.email(), json);
+        var id = SQLDataAccess.executeUpdate(statement, userData.username(), userData.password(), userData.email(), json);
 
         return userData;
     }
@@ -48,6 +48,6 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE userData";
-        SqlDataAccess.executeUpdate(statement);
+        SQLDataAccess.executeUpdate(statement);
     }
 }

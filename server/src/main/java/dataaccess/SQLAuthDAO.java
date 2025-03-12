@@ -14,7 +14,7 @@ public class SQLAuthDAO implements AuthDAO {
         authData = new AuthData(authToken, authData.username());
         var statement = "INSERT INTO authData (authToken, username, json) VALUES (?, ?, ?)";
         var json = new Gson().toJson(authData);
-        var id = SqlDataAccess.executeUpdate(statement, authData.authToken(), authData.username(), json);
+        var id = SQLDataAccess.executeUpdate(statement, authData.authToken(), authData.username(), json);
         return authData;
     }
 
@@ -47,13 +47,13 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void deleteAuth(AuthData authdata) throws DataAccessException {
         var statement = "DELETE FROM authdata WHERE authToken=?";
-        SqlDataAccess.executeUpdate(statement, authdata.authToken());
+        SQLDataAccess.executeUpdate(statement, authdata.authToken());
     }
 
     @Override
     public void clear() throws DataAccessException {
         var statement = "TRUNCATE authdata";
-        SqlDataAccess.executeUpdate(statement);
+        SQLDataAccess.executeUpdate(statement);
 
     }
 }

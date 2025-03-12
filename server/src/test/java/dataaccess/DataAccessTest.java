@@ -22,7 +22,7 @@ public class DataAccessTest {
 
     @Test
     void createAuthData() throws DataAccessException {
-        DataAccess tempDataAccess = new SqlDataAccess();
+        DataAccess tempDataAccess = new SQLDataAccess();
         AuthData authData = new AuthData("random", "myself");
         AuthData returnAuthData = tempDataAccess.authDAO.createAuth(authData);
         assertEquals("myself", returnAuthData.username());

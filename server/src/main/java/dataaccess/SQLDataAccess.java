@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
-public class SqlDataAccess extends DataAccess {
+public class SQLDataAccess extends DataAccess {
 
-    public SqlDataAccess() throws DataAccessException {
+    public SQLDataAccess() throws DataAccessException {
         authDAO = new SQLAuthDAO();
         userDAO = new SQLUserDAO();
         gameDAO = new SQLGameDAO();
@@ -26,8 +26,8 @@ public class SqlDataAccess extends DataAccess {
             """
                 CREATE TABLE IF NOT EXISTS gameDATA (
                 `id` int NOT NULL AUTO_INCREMENT,
-                `whiteUsername` varchar(255) NOT NULL,
-                `blackUsername` varchar(255) NOT NULL,
+                `whiteUsername` varchar(255) DEFAULT NULL,
+                `blackUsername` varchar(255) DEFAULT NULL,
                 `gameName` varchar(255) NOT NULL,
                 `json` TEXT DEFAULT NULL,
                 PRIMARY KEY (`id`))
@@ -65,6 +65,7 @@ public class SqlDataAccess extends DataAccess {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
