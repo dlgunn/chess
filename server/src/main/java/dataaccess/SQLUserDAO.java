@@ -1,7 +1,6 @@
 package dataaccess;
 
 import com.google.gson.Gson;
-import model.AuthData;
 import model.UserData;
 
 import java.sql.ResultSet;
@@ -47,7 +46,8 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void clear() {
-
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE userData";
+        SqlDataAccess.executeUpdate(statement);
     }
 }

@@ -20,7 +20,7 @@ public class GameService {
         return new CreateGameResult(gameData.gameID());
     }
 
-    public ListGamesResult listGames() {
+    public ListGamesResult listGames() throws DataAccessException {
         return new ListGamesResult(this.dataAccess.gameDAO.listGames());
     }
 

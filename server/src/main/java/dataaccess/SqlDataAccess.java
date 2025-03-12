@@ -30,16 +30,16 @@ public class SqlDataAccess extends DataAccess {
                 `gameName` varchar(255) NOT NULL,
                 `json` TEXT DEFAULT NULL,
                 PRIMARY KEY (`id`));
-                
-               CREATE TABLE IF NOT EXISTS userData (
-                           `id` int NOT NULL AUTO_INCREMENT,
-                           `username` varchar(255) NOT NULL,
-                           `password` varchar(255) NOT NULL,
-                           `email` varchar(255) NOT NULL,
-                           `json` TEXT DEFAULT NULL,
-               PRIMARY KEY (`id`));
-           
-           \s"""
+               \s
+            CREATE TABLE IF NOT EXISTS userData (
+                `id` int NOT NULL AUTO_INCREMENT,
+                `username` varchar(255) NOT NULL,
+                `password` varchar(255) NOT NULL,
+                `email` varchar(255) NOT NULL,
+                `json` TEXT DEFAULT NULL,
+                PRIMARY KEY (`id`));
+      
+            """
     };
 
 

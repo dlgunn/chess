@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 
 public class Service {
     public final DataAccess dataAccess;
@@ -13,7 +14,7 @@ public class Service {
         gameService = new GameService(dataAccess);
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         dataAccess.clear();
     }
 

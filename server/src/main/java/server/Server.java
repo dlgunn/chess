@@ -55,7 +55,7 @@ public class Server {
         res.body(new Gson().toJson(Map.of("message", ex.getMessage())));
     }
 
-    private Object handleClear(Request req, Response res) {
+    private Object handleClear(Request req, Response res) throws DataAccessException {
         service.clear();
         return new JsonObject();
     }
