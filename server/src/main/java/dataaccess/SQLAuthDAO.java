@@ -23,7 +23,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, json FROM authdata WHERE authToken=?";
+            var statement = "SELECT username, json FROM authData WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
                 try (var rs = ps.executeQuery()) {
@@ -46,13 +46,13 @@ public class SQLAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAuth(AuthData authdata) throws DataAccessException {
-        var statement = "DELETE FROM authdata WHERE authToken=?";
+        var statement = "DELETE FROM authData WHERE authToken=?";
         SQLDataAccess.executeUpdate(statement, authdata.authToken());
     }
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE authdata";
+        var statement = "TRUNCATE authData";
         SQLDataAccess.executeUpdate(statement);
 
     }
