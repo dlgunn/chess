@@ -1,9 +1,17 @@
 package ui;
 
+import model.UserData;
+import server.ServerFacade;
+
 import java.util.Arrays;
 
 public class PregameClient {
     private State state = State.SIGNEDOUT;
+    private ServerFacade server;
+
+    public PregameClient(String serverUrl) {
+        server = new ServerFacade(serverUrl);
+    }
 
 
     public String eval(String input) {
@@ -12,7 +20,7 @@ public class PregameClient {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "register" -> signIn(params);
+                case "register" -> register(params);
 //                case "login" -> signIn(params);
 //                case "rescue" -> rescuePet(params);
 //                case "list" -> listPets();
@@ -58,11 +66,9 @@ public class PregameClient {
     public String register(String... params) throws Exception {
         if (params.length >= 2) {
             var name = params[0];
-            var type = PetType.valueOf(params[1].toUpperCase());
-            var pet = new Pet(0, name, type);
-            pet = server.addPet(pet);
-            return String.format("You rescued %s. Assigned ID: %d", pet.name(), pet.id());
-
+            var userData = new UserData(params[0],params[1],params[2]);
+             userData = server.register(userData);
+            return String.format("You logged in as %s.", userData.username());
         }
         throw new Exception();
     }

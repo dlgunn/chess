@@ -8,7 +8,7 @@ public class Repl {
     private PregameClient client;
 
     public Repl(String serverUrl) {
-        this.client = new PregameClient();
+        this.client = new PregameClient(serverUrl);
     }
 
     public void run() {

@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import model.UserData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,18 +11,19 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
+
 public class ServerFacade {
     private String serverUrl;
-    public ServerFacade(int port) {
-        this.serverUrl = "http://localhost:" + port;
+    public ServerFacade(String serverUrl) {
+        this.serverUrl = serverUrl;
     }
 
-    public Pet register(Pet pet) throws ResponseException {
+    public UserData register(UserData userData) throws Exception {
         var path = "/register";
-        return this.makeRequest("POST", path, pet, Pet.class);
+        return this.makeRequest("POST", path, userData, UserData.class);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -32,11 +34,11 @@ public class ServerFacade {
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
-        } catch (ResponseException ex) {
-            throw ex;
         } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
-        }
+            throw ex;}
+//        } catch (Exception ex) {
+//            throw new ResponseException(500, ex.getMessage());
+//        }
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
