@@ -15,18 +15,24 @@ import java.util.HashMap;
 
 public class ServerFacade {
     private String serverUrl;
+    private String authToken;
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
     }
 
-    public void logout(String authToken) throws Exception {
+    public void logout() throws Exception {
         var path = "/session";
         this.makeRequest("DELETE", path, null, null, authToken);
+        authToken = null;
     }
 
-    public UserData register(UserData userData) throws Exception {
+    public String register(UserData userData) throws Exception {
         var path = "/user";
-        return this.makeRequest("POST", path, userData, UserData.class, null);
+        record registerResponse(String username, String authToken) {
+        }
+        var response = this.makeRequest("POST", path, userData, registerResponse.class , null);
+        authToken = response.authToken;
+        return response.username;
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
@@ -35,7 +41,7 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-            writeHeader(authToken, http);
+            writeAuthorization(http);
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
@@ -57,9 +63,11 @@ public class ServerFacade {
         }
     }
 
-    private static void writeHeader(String authToken, HttpURLConnection http) {
+
+
+    private void writeAuthorization(HttpURLConnection http) {
         if (authToken != null) {
-            http.addRequestProperty("Content-Type", "application/json");
+            http.addRequestProperty("Authorization", authToken);
         }
     }
 

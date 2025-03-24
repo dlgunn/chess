@@ -1,6 +1,5 @@
 package ui;
 
-import model.UserData;
 import server.ServerFacade;
 
 import java.util.Arrays;
@@ -38,7 +37,7 @@ public class PostLoginClient extends Client {
     private String logout(Repl repl, String[] params) throws Exception {
         if (params.length == 0) {
             server.logout();
-            repl.setClient(new PostLoginClient(server));
+            repl.setClient(new PreLoginClient(server));
             return "You have been logged out";
         }
         throw new Exception();

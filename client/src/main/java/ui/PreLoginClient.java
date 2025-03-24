@@ -62,9 +62,9 @@ public class PreLoginClient extends Client {
     public String register(Repl repl, String... params) throws Exception {
         if (params.length >= 2) {
             var userData = new UserData(params[0],params[1],params[2]);
-             userData = server.register(userData);
+             String username = server.register(userData);
              repl.setClient(new PostLoginClient(server));
-            return String.format("You logged in as %s.", userData.username());
+            return String.format("You logged in as %s.", username);
         }
         throw new Exception();
     }
