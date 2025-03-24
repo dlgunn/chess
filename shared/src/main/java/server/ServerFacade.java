@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 
 
 public class ServerFacade {
@@ -68,7 +69,8 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
-                    throw new Exception();
+                    String message = getMessageFromRespErr(respErr);
+                    throw new Exception(message);
 //                    fix this line later.
 //                    throw ResponseException.fromJson(respErr);
                 }
@@ -81,5 +83,10 @@ public class ServerFacade {
 
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
+    }
+
+    private String getMessageFromRespErr(InputStream respErr) {
+        var map = new Gson().fromJson(new InputStreamReader(respErr), HashMap.class);
+        return map.get("message").toString();
     }
 }
