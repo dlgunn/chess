@@ -5,22 +5,26 @@ import server.ServerFacade;
 
 import java.util.Arrays;
 
-public class PregameClient {
-    private State state = State.SIGNEDOUT;
+public class PreLoginClient extends Client {
+//    private State state = State.SIGNEDOUT;
     private ServerFacade server;
 
-    public PregameClient(String serverUrl) {
+    public PreLoginClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
     }
 
+    public PreLoginClient(ServerFacade server) {
+        this.server = server;
+    }
 
-    public String eval(String input) {
+
+    public String eval(String input, Repl repl) {
         try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "register" -> register(params);
+                case "register" -> register(repl, params);
 //                case "login" -> signIn(params);
 //                case "rescue" -> rescuePet(params);
 //                case "list" -> listPets();
@@ -36,22 +40,14 @@ public class PregameClient {
     }
 
     public String help() {
-        if (state == State.SIGNEDOUT) {
-            return """
+
+        return """
+                    Possible Commands (case insensitive)
                     - help
                     - quit
-                    - login
-                    - register
+                    - login <username> <password>
+                    - register <username> <password>
                     """;
-        }
-        return """
-                - list
-                - adopt <pet id>
-                - rescue <name> <CAT|DOG|FROG|FISH>
-                - adoptAll
-                - signOut
-                - quit
-                """;
     }
 
 //    public String signIn(String... params)  {
@@ -63,11 +59,11 @@ public class PregameClient {
 //        }
 //        throw new ResponseException(400, "Expected: <yourname>");
 //    }
-    public String register(String... params) throws Exception {
+    public String register(Repl repl, String... params) throws Exception {
         if (params.length >= 2) {
-            var name = params[0];
             var userData = new UserData(params[0],params[1],params[2]);
              userData = server.register(userData);
+             repl.setClient(new PostLoginClient(server));
             return String.format("You logged in as %s.", userData.username());
         }
         throw new Exception();

@@ -5,10 +5,10 @@ import static ui.EscapeSequences.*;
 
 
 public class Repl {
-    private PregameClient client;
+    private Client client;
 
     public Repl(String serverUrl) {
-        this.client = new PregameClient(serverUrl);
+        this.client = new PreLoginClient(serverUrl);
     }
 
     public void run() {
@@ -20,7 +20,7 @@ public class Repl {
             String line = scanner.nextLine();
 
             try {
-                result = client.eval(line);
+                result = client.eval(line, this);
                 System.out.print(SET_TEXT_COLOR_BLUE + result);
             } catch (Throwable e) {
                 var msg = e.toString();
@@ -32,5 +32,9 @@ public class Repl {
 
     private void printPrompt() {
         System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + ">>> " + SET_TEXT_COLOR_YELLOW);
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 }

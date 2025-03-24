@@ -19,18 +19,23 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public UserData register(UserData userData) throws Exception {
-        var path = "/user";
-        return this.makeRequest("POST", path, userData, UserData.class);
+    public void logout(String authToken) throws Exception {
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, null, authToken);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws Exception {
+    public UserData register(UserData userData) throws Exception {
+        var path = "/user";
+        return this.makeRequest("POST", path, userData, UserData.class, null);
+    }
+
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
-
+            writeHeader(authToken, http);
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
@@ -51,6 +56,14 @@ public class ServerFacade {
             }
         }
     }
+
+    private static void writeHeader(String authToken, HttpURLConnection http) {
+        if (authToken != null) {
+            http.addRequestProperty("Content-Type", "application/json");
+        }
+    }
+
+
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;
         if (http.getContentLength() < 0) {
