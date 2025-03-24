@@ -19,7 +19,7 @@ public class ServerFacade {
     }
 
     public UserData register(UserData userData) throws Exception {
-        var path = "/register";
+        var path = "/user";
         return this.makeRequest("POST", path, userData, UserData.class);
     }
 
