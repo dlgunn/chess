@@ -35,6 +35,16 @@ public class ServerFacade {
         return response.username;
     }
 
+    public String login(UserData userData) throws Exception {
+        var path = "/session";
+        record loginResponse(String username, String authToken) {
+        }
+        var response = this.makeRequest("POST", path, userData, loginResponse.class , null);
+        authToken = response.authToken;
+        return response.username;
+
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
