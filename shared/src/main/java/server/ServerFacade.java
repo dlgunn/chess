@@ -148,6 +148,8 @@ public class ServerFacade {
         var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
         int gameID = response.games[id-1].gameID();
         record joinGameRequest(ChessGame.TeamColor playerColor, int gameID) {}
-        return this.makeRequest("PUT", path, new joinGameRequest(color, gameID), GameData.class, authToken);
+        this.makeRequest("PUT", path, new joinGameRequest(color, gameID), GameData.class, authToken);
+        return response.games[id-1];
+
     }
 }

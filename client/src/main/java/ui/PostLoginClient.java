@@ -1,11 +1,16 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
-import com.google.gson.Gson;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import model.GameData;
 import server.ServerFacade;
+import ui.EscapeSequences.*;
 
 import java.util.Arrays;
+
+import static ui.EscapeSequences.*;
 
 public class PostLoginClient extends Client {
     private ServerFacade server;
@@ -50,10 +55,62 @@ public class PostLoginClient extends Client {
 
     private String joinGame(String[] params) throws Exception {
         if (params.length == 2) {
-            server.joinGame(params[0], params[1]);
-            return "Where is my game?";
+            ChessGame.TeamColor color = ChessGame.TeamColor.valueOf(params[1].toUpperCase());
+            GameData gameData = server.joinGame(Integer.parseInt(params[0]), color);
+            printBoard(gameData.game().getBoard(), color);
+            return "";
         }
         throw new Exception();
+    }
+
+    public void printBoard(ChessBoard board, ChessGame.TeamColor color) {
+        for (int i = 1; i < 9; ++i) {
+            for (int j = 1; j < 9; ++j) {
+                ChessPiece piece = board.getPiece(new ChessPosition(i, j));
+                printSquareArt(piece, i, j);
+            }
+            System.out.print(RESET_BG_COLOR + "\n");
+        }
+    }
+
+    private void printSquareArt(ChessPiece piece, int row, int col) {
+        if ((row + col) % 2 == 0) {
+            System.out.print(SET_BG_COLOR_WHITE);
+            System.out.print(SET_TEXT_COLOR_BLUE);
+        } else {
+            System.out.print(SET_BG_COLOR_BLUE);
+            System.out.print(SET_TEXT_COLOR_WHITE);
+        }
+
+        if (piece == null) {
+            System.out.print(EMPTY);
+        } else {
+            System.out.print(getIcon(piece));
+        }
+    }
+
+    private String getIcon(ChessPiece piece) {
+
+
+        if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+            return switch (piece.getPieceType()) {
+                case KING -> WHITE_KING;
+                case QUEEN -> WHITE_QUEEN;
+                case BISHOP -> WHITE_BISHOP;
+                case KNIGHT -> WHITE_KNIGHT;
+                case ROOK -> WHITE_ROOK;
+                case PAWN -> WHITE_PAWN;
+            };
+        } else {
+            return switch (piece.getPieceType()) {
+                case KING -> BLACK_KING;
+                case QUEEN -> BLACK_QUEEN;
+                case BISHOP -> BLACK_BISHOP;
+                case KNIGHT -> BLACK_KNIGHT;
+                case ROOK -> BLACK_ROOK;
+                case PAWN -> BLACK_PAWN;
+            };
+        }
     }
 
     private String createGame(String[] params) throws Exception {
@@ -70,7 +127,6 @@ public class PostLoginClient extends Client {
         if (params.length == 0) {
             GameData[] games = server.listGames();
             var result = new StringBuilder();
-            var gson = new Gson();
             int i = 1;
             for (var game : games) {
                 result.append(i).append(" ").append(game.gameName()).append('\n');
