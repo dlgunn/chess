@@ -54,6 +54,12 @@ public class PostLoginClient extends Client {
         throw new Exception();
     }
 
+    private String listGames(String[] params) throws Exception {
+        if (params.length == 0) {
+            server.listGames();
+        }
+    }
+
     public String help() {
         return """
                     Possible Commands (case insensitive)

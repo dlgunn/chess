@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
@@ -130,5 +131,13 @@ public class ServerFacade {
     private String getMessageFromRespErr(InputStream respErr) {
         var map = new Gson().fromJson(new InputStreamReader(respErr), HashMap.class);
         return map.get("message").toString();
+    }
+
+    public ChessGame[] listGames() throws Exception {
+        var path = "/pet";
+        record listGameResponse(ChessGame[] games) {
+        }
+        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        return response.games;
     }
 }
