@@ -1,5 +1,8 @@
 package ui;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
+import model.GameData;
 import server.ServerFacade;
 
 import java.util.Arrays;
@@ -21,9 +24,10 @@ public class PostLoginClient extends Client {
             return switch (cmd) {
                 case "logout" -> logout(repl, params);
                 case "create" -> createGame(params);
+                case "join" -> joinGame(params);
 //                case "login" -> signIn(params);
 //                case "rescue" -> rescuePet(params);
-//                case "list" -> listPets();
+                case "list" -> listGames(params);
 //                case "signout" -> signOut();
 //                case "adopt" -> adoptPet(params);
 //                case "adoptall" -> adoptAllPets();
@@ -44,6 +48,14 @@ public class PostLoginClient extends Client {
         throw new Exception();
     }
 
+    private String joinGame(String[] params) throws Exception {
+        if (params.length == 2) {
+            server.joinGame(params[0], params[1]);
+            return "Where is my game?";
+        }
+        throw new Exception();
+    }
+
     private String createGame(String[] params) throws Exception {
         if (params.length == 1) {
 
@@ -56,8 +68,17 @@ public class PostLoginClient extends Client {
 
     private String listGames(String[] params) throws Exception {
         if (params.length == 0) {
-            server.listGames();
+            GameData[] games = server.listGames();
+            var result = new StringBuilder();
+            var gson = new Gson();
+            int i = 1;
+            for (var game : games) {
+                result.append(i).append(" ").append(game.gameName()).append('\n');
+                ++i;
+            }
+            return result.toString();
         }
+        throw new Exception();
     }
 
     public String help() {

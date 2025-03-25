@@ -133,11 +133,21 @@ public class ServerFacade {
         return map.get("message").toString();
     }
 
-    public ChessGame[] listGames() throws Exception {
-        var path = "/pet";
-        record listGameResponse(ChessGame[] games) {
+    public GameData[] listGames() throws Exception {
+        var path = "/game";
+        record listGameResponse(GameData[] games) {
         }
         var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
         return response.games;
+    }
+
+    public GameData joinGame(int id, ChessGame.TeamColor color) throws Exception {
+        var path = "/game";
+        record listGameResponse(GameData[] games) {
+        }
+        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        int gameID = response.games[id-1].gameID();
+        record joinGameRequest(ChessGame.TeamColor playerColor, int gameID) {}
+        return this.makeRequest("PUT", path, new joinGameRequest(color, gameID), GameData.class, authToken);
     }
 }
