@@ -59,19 +59,15 @@ public class ServerFacade {
 
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
-        try {
-            URL url = (new URI(serverUrl + path)).toURL();
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod(method);
-            http.setDoOutput(true);
-            writeAuthorization(http);
-            writeBody(request, http);
-            http.connect();
-            throwIfNotSuccessful(http);
-            return readBody(http, responseClass);
-        } catch (Exception ex) {
-            throw ex;
-        }
+        URL url = (new URI(serverUrl + path)).toURL();
+        HttpURLConnection http = (HttpURLConnection) url.openConnection();
+        http.setRequestMethod(method);
+        http.setDoOutput(true);
+        writeAuthorization(http);
+        writeBody(request, http);
+        http.connect();
+        throwIfNotSuccessful(http);
+        return readBody(http, responseClass);
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
