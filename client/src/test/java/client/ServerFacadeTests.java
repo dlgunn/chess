@@ -181,4 +181,16 @@ public class ServerFacadeTests {
         assertThrows(Exception.class, () -> facade.observeGame(1));
     }
 
+    @Test
+    void clear() {
+        try {
+            facade.register(new UserData("name", "pass", "email"));
+            facade.createGame("gameName");
+            facade.clear();
+            assertThrows(Exception.class, () -> facade.joinGame(1, ChessGame.TeamColor.BLACK));
+        } catch (Exception e) {
+            System.out.print("Setup failed");
+        }
+    }
+
 }
