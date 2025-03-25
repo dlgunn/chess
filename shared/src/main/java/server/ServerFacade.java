@@ -141,7 +141,12 @@ public class ServerFacade {
         record ListGameResponse(GameData[] games) {
         }
         var response = this.makeRequest("GET", path, null, ListGameResponse.class, authToken);
-        int gameID = response.games[id-1].gameID();
+        int gameID;
+        try {
+            gameID = response.games[id-1].gameID();
+        } catch (Exception ex) {
+            throw new Exception("This game is not available");
+        }
         record JoinGameRequest(ChessGame.TeamColor playerColor, int gameID) {}
         this.makeRequest("PUT", path, new JoinGameRequest(color, gameID), GameData.class, authToken);
         return response.games[id-1];

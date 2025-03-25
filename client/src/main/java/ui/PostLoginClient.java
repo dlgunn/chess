@@ -49,7 +49,12 @@ public class PostLoginClient extends Client {
 
     private String joinGame(String[] params) throws Exception {
         if (params.length == 2) {
-            ChessGame.TeamColor color = ChessGame.TeamColor.valueOf(params[1].toUpperCase());
+            ChessGame.TeamColor color;
+            try {
+                color = ChessGame.TeamColor.valueOf(params[1].toUpperCase());
+            } catch (Exception ex) {
+                throw new Exception("Not a color option");
+            }
             GameData gameData = server.joinGame(Integer.parseInt(params[0]), color);
             printBoard(gameData.game().getBoard(), color);
             return "";
@@ -143,12 +148,30 @@ public class PostLoginClient extends Client {
             var result = new StringBuilder();
             int i = 1;
             for (var game : games) {
-                result.append(i).append(" ").append(game.gameName()).append('\n');
+                String playerInfo = getPlayerInfo(game);
+                result.append(i).append(" Game Name: ").append(game.gameName()).append(". ").append(playerInfo).append('\n');
                 ++i;
             }
             return result.toString();
         }
         throw new Exception("Wrong number of arguments");
+    }
+
+    private static String getPlayerInfo(GameData game) {
+        String playerInfo = " ";
+        playerInfo += "White: ";
+        if (game.whiteUsername() == null) {
+            playerInfo += "not joined.";
+        } else {
+            playerInfo += game.whiteUsername() + ".";
+        }
+        playerInfo += " Black: ";
+        if (game.blackUsername() == null) {
+            playerInfo += "not joined.";
+        } else {
+            playerInfo += game.blackUsername() + ".";
+        }
+        return playerInfo;
     }
 
     public String help() {
