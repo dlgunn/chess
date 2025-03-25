@@ -57,6 +57,7 @@ public class ServerFacade {
 
 
 
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
@@ -107,7 +108,7 @@ public class ServerFacade {
         return response;
     }
 
-    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, Exception{
+    private void throwIfNotSuccessful(HttpURLConnection http) throws Exception{
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
@@ -150,6 +151,21 @@ public class ServerFacade {
         record joinGameRequest(ChessGame.TeamColor playerColor, int gameID) {}
         this.makeRequest("PUT", path, new joinGameRequest(color, gameID), GameData.class, authToken);
         return response.games[id-1];
+
+    }
+
+    public GameData observeGame(int id) throws Exception {
+        var path = "/game";
+        record listGameResponse(GameData[] games) {
+        }
+        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        return response.games[id-1];
+
+    }
+
+    public void clear() throws Exception {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null, null);
 
     }
 }

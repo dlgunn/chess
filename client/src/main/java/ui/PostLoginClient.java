@@ -6,8 +6,6 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
 import server.ServerFacade;
-import ui.EscapeSequences.*;
-
 import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
@@ -30,6 +28,7 @@ public class PostLoginClient extends Client {
                 case "logout" -> logout(repl, params);
                 case "create" -> createGame(params);
                 case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
 //                case "login" -> signIn(params);
 //                case "rescue" -> rescuePet(params);
                 case "list" -> listGames(params);
@@ -61,6 +60,18 @@ public class PostLoginClient extends Client {
             return "";
         }
         throw new Exception();
+    }
+
+    public void clear() throws Exception {
+        server.clear();
+    }
+
+    private String observeGame(String[] params) throws Exception {
+        if (params.length == 1) {
+            GameData gameData = server.observeGame(Integer.parseInt(params[0]));
+            printBoard(gameData.game().getBoard(), ChessGame.TeamColor.WHITE);
+        }
+        return "";
     }
 
     public void printBoard(ChessBoard board, ChessGame.TeamColor color) {
