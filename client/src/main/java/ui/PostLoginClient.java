@@ -11,7 +11,7 @@ import java.util.Arrays;
 import static ui.EscapeSequences.*;
 
 public class PostLoginClient extends Client {
-    private ServerFacade server;
+    private final ServerFacade server;
 
     public PostLoginClient(ServerFacade server) {
         this.server = server;
@@ -29,12 +29,7 @@ public class PostLoginClient extends Client {
                 case "create" -> createGame(params);
                 case "join" -> joinGame(params);
                 case "observe" -> observeGame(params);
-//                case "login" -> signIn(params);
-//                case "rescue" -> rescuePet(params);
                 case "list" -> listGames(params);
-//                case "signout" -> signOut();
-//                case "adopt" -> adoptPet(params);
-//                case "adoptall" -> adoptAllPets();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -49,7 +44,7 @@ public class PostLoginClient extends Client {
             repl.setClient(new PreLoginClient(server));
             return "You have been logged out";
         }
-        throw new Exception();
+        throw new Exception("Wrong number of arguments");
     }
 
     private String joinGame(String[] params) throws Exception {
@@ -59,7 +54,7 @@ public class PostLoginClient extends Client {
             printBoard(gameData.game().getBoard(), color);
             return "";
         }
-        throw new Exception();
+        throw new Exception("Wrong number of arguments");
     }
 
     public void clear() throws Exception {
@@ -70,6 +65,8 @@ public class PostLoginClient extends Client {
         if (params.length == 1) {
             GameData gameData = server.observeGame(Integer.parseInt(params[0]));
             printBoard(gameData.game().getBoard(), ChessGame.TeamColor.WHITE);
+        } else {
+            throw new Exception("Wrong number of parameters");
         }
         return "";
     }
@@ -81,7 +78,6 @@ public class PostLoginClient extends Client {
             inc = -1;
             start = 9;
         }
-        int end = start + inc * 8;
         for (int i = 8; i > 0; i--) {
             for (int j = 1; j < 9; j++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(start + inc * i, start + inc * j));
@@ -138,7 +134,7 @@ public class PostLoginClient extends Client {
             return String.format("You have created a game named %s", params[0]);
         }
 
-        throw new Exception();
+        throw new Exception("Wrong number of arguments");
     }
 
     private String listGames(String[] params) throws Exception {
@@ -152,7 +148,7 @@ public class PostLoginClient extends Client {
             }
             return result.toString();
         }
-        throw new Exception();
+        throw new Exception("Wrong number of arguments");
     }
 
     public String help() {

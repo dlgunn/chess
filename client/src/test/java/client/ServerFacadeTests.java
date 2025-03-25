@@ -6,9 +6,6 @@ import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server.ServerFacade;
-
-import java.util.Objects;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -61,7 +58,7 @@ public class ServerFacadeTests {
     @Test
     void registerAlreadyTaken(){
         try {
-            var username1 = facade.register(new UserData("name", "pass", "email"));
+            facade.register(new UserData("name", "pass", "email"));
         } catch (Exception e) {
             System.out.print("Setup failed");
         }
@@ -85,7 +82,7 @@ public class ServerFacadeTests {
     @Test
     void loginWrongInfo() {
         try {
-            var username1 = facade.register(new UserData("name", "pass", "email"));
+            facade.register(new UserData("name", "pass", "email"));
         } catch (Exception e) {
             System.out.print("Setup failed");
         }

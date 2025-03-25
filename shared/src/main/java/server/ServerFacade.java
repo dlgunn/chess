@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 
 public class ServerFacade {
-    private String serverUrl;
+    private final String serverUrl;
     private String authToken;
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -30,9 +30,9 @@ public class ServerFacade {
 
     public String register(UserData userData) throws Exception {
         var path = "/user";
-        record registerResponse(String username, String authToken) {
+        record RegisterResponse(String username, String authToken) {
         }
-        var response = this.makeRequest("POST", path, userData, registerResponse.class , null);
+        var response = this.makeRequest("POST", path, userData, RegisterResponse.class , null);
         authToken = response.authToken;
         return response.username;
     }
@@ -46,9 +46,9 @@ public class ServerFacade {
 
     public String login(UserData userData) throws Exception {
         var path = "/session";
-        record loginResponse(String username, String authToken) {
+        record LoginResponse(String username, String authToken) {
         }
-        var response = this.makeRequest("POST", path, userData, loginResponse.class , null);
+        var response = this.makeRequest("POST", path, userData, LoginResponse.class , null);
         authToken = response.authToken;
         return response.username;
 
@@ -70,10 +70,8 @@ public class ServerFacade {
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (Exception ex) {
-            throw ex;}
-//        } catch (Exception ex) {
-//            throw new ResponseException(500, ex.getMessage());
-//        }
+            throw ex;
+        }
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
@@ -136,29 +134,29 @@ public class ServerFacade {
 
     public GameData[] listGames() throws Exception {
         var path = "/game";
-        record listGameResponse(GameData[] games) {
+        record ListGameResponse(GameData[] games) {
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        var response = this.makeRequest("GET", path, null, ListGameResponse.class, authToken);
         return response.games;
     }
 
     public GameData joinGame(int id, ChessGame.TeamColor color) throws Exception {
         var path = "/game";
-        record listGameResponse(GameData[] games) {
+        record ListGameResponse(GameData[] games) {
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        var response = this.makeRequest("GET", path, null, ListGameResponse.class, authToken);
         int gameID = response.games[id-1].gameID();
-        record joinGameRequest(ChessGame.TeamColor playerColor, int gameID) {}
-        this.makeRequest("PUT", path, new joinGameRequest(color, gameID), GameData.class, authToken);
+        record JoinGameRequest(ChessGame.TeamColor playerColor, int gameID) {}
+        this.makeRequest("PUT", path, new JoinGameRequest(color, gameID), GameData.class, authToken);
         return response.games[id-1];
 
     }
 
     public GameData observeGame(int id) throws Exception {
         var path = "/game";
-        record listGameResponse(GameData[] games) {
+        record ListGameResponse(GameData[] games) {
         }
-        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        var response = this.makeRequest("GET", path, null, ListGameResponse.class, authToken);
         return response.games[id-1];
 
     }

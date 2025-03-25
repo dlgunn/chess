@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class PreLoginClient extends Client {
 //    private State state = State.SIGNEDOUT;
-    private ServerFacade server;
+    private final ServerFacade server;
 
     public PreLoginClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -26,11 +26,6 @@ public class PreLoginClient extends Client {
             return switch (cmd) {
                 case "register" -> register(repl, params);
                 case "login" -> login(repl, params);
-//                case "rescue" -> rescuePet(params);
-//                case "list" -> listPets();
-//                case "signout" -> signOut();
-//                case "adopt" -> adoptPet(params);
-//                case "adoptall" -> adoptAllPets();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -40,14 +35,14 @@ public class PreLoginClient extends Client {
     }
 
     private String login(Repl repl, String[] params) throws Exception {
-        if (params.length >= 2) {
+        if (params.length == 2) {
             var userData = new UserData(params[0],params[1],null);
             String username = server.login(userData);
             repl.setClient(new PostLoginClient(server));
             return String.format("You logged in as %s.", username);
         }
 
-        throw new Exception();
+        throw new Exception("Wrong number of arguments");
     }
 
     public String help() {
@@ -61,12 +56,12 @@ public class PreLoginClient extends Client {
                     """;
     }
     public String register(Repl repl, String... params) throws Exception {
-        if (params.length >= 2) {
+        if (params.length == 3) {
             var userData = new UserData(params[0],params[1],params[2]);
              String username = server.register(userData);
              repl.setClient(new PostLoginClient(server));
             return String.format("You logged in as %s.", username);
         }
-        throw new Exception();
+        throw new Exception("Wrong number of arguments");
     }
 }
