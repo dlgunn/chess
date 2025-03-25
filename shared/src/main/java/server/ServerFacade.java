@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import model.GameData;
 import model.UserData;
 
 import java.io.IOException;
@@ -35,6 +36,13 @@ public class ServerFacade {
         return response.username;
     }
 
+    public String createGame(String gameName) throws Exception {
+        var path = "/game";
+        GameData gameData = new GameData(0,null,null,gameName,null);
+        var response = this.makeRequest("POST", path, gameData, GameData.class , authToken);
+        return response.gameName();
+    }
+
     public String login(UserData userData) throws Exception {
         var path = "/session";
         record loginResponse(String username, String authToken) {
@@ -44,6 +52,9 @@ public class ServerFacade {
         return response.username;
 
     }
+
+
+
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
         try {

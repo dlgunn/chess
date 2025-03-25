@@ -20,6 +20,7 @@ public class PostLoginClient extends Client {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "logout" -> logout(repl, params);
+                case "create" -> createGame(params);
 //                case "login" -> signIn(params);
 //                case "rescue" -> rescuePet(params);
 //                case "list" -> listPets();
@@ -40,6 +41,16 @@ public class PostLoginClient extends Client {
             repl.setClient(new PreLoginClient(server));
             return "You have been logged out";
         }
+        throw new Exception();
+    }
+
+    private String createGame(String[] params) throws Exception {
+        if (params.length == 1) {
+
+            server.createGame(params[0]);
+            return String.format("You have created a game named %s", params[0]);
+        }
+
         throw new Exception();
     }
 
