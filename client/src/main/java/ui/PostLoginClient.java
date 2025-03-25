@@ -64,10 +64,17 @@ public class PostLoginClient extends Client {
     }
 
     public void printBoard(ChessBoard board, ChessGame.TeamColor color) {
-        for (int i = 1; i < 9; ++i) {
-            for (int j = 1; j < 9; ++j) {
-                ChessPiece piece = board.getPiece(new ChessPosition(i, j));
-                printSquareArt(piece, i, j);
+        int inc = 1;
+        int start = 0;
+        if (color == ChessGame.TeamColor.BLACK) {
+            inc = -1;
+            start = 9;
+        }
+        int end = start + inc * 8;
+        for (int i = 8; i > 0; i--) {
+            for (int j = 1; j < 9; j++) {
+                ChessPiece piece = board.getPiece(new ChessPosition(start + inc * i, start + inc * j));
+                printSquareArt(piece, start + inc * i, start + inc * j);
             }
             System.out.print(RESET_BG_COLOR + "\n");
         }
@@ -75,11 +82,11 @@ public class PostLoginClient extends Client {
 
     private void printSquareArt(ChessPiece piece, int row, int col) {
         if ((row + col) % 2 == 0) {
-            System.out.print(SET_BG_COLOR_WHITE);
-            System.out.print(SET_TEXT_COLOR_BLUE);
-        } else {
             System.out.print(SET_BG_COLOR_BLUE);
-            System.out.print(SET_TEXT_COLOR_WHITE);
+            System.out.print(SET_TEXT_COLOR_BLACK);
+        } else {
+            System.out.print(SET_BG_COLOR_WHITE);
+            System.out.print(SET_TEXT_COLOR_BLACK);
         }
 
         if (piece == null) {
