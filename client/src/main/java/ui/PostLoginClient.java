@@ -109,8 +109,6 @@ public class PostLoginClient extends Client {
     }
 
     private String getIcon(ChessPiece piece) {
-
-
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
             return switch (piece.getPieceType()) {
                 case KING -> WHITE_KING;

@@ -9,11 +9,13 @@ import model.AuthData;
 import service.*;
 import service.Service;
 import spark.*;
+import server.websocket.WebSocketHandler;
 
 import java.util.Map;
 
 public class Server {
     public Service service;
+    public WebSocketHandler webSocketHandler;
 
     public Server() {
         DataAccess dataAccess;
@@ -23,6 +25,7 @@ public class Server {
             throw new RuntimeException(e);
         }
         service = new Service(dataAccess);
+        webSocketHandler = new WebSocketHandler();
     }
 
 
@@ -32,6 +35,9 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+        Spark.webSocket("/ws", webSocketHandler);
+
+
         Spark.post("/user", this::handleRegister);
         Spark.delete("/session", this::handleLogout);
         Spark.post("/session", this::handleLogin);
