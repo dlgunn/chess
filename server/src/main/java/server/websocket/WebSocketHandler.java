@@ -20,6 +20,7 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -51,10 +52,30 @@ public class WebSocketHandler {
 
     private void makeMove(String message, Session session) throws IOException {
         MakeMoveCommand command = new Gson().fromJson(message, MakeMoveCommand.class);
+
         ChessMove move = command.getChessMove();
         GameData gameData;
         try {
+            AuthData authData = dataAccess.authDAO.getAuth(command.getAuthToken());
+            if (authData == null) {
+                session.getRemote().sendString(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Not authorized").toString());
+                return;
+            }
             gameData = dataAccess.gameDAO.getGame(command.getGameID());
+            String user = authData.username();
+            String correctUsername;
+            ChessGame.TeamColor userColor;
+            ChessGame.TeamColor pieceColor = gameData.game().getBoard().getPiece(move.getStartPosition()).getTeamColor();
+            if (pieceColor == ChessGame.TeamColor.WHITE) {
+                 correctUsername = gameData.whiteUsername();
+            } else {
+                correctUsername = gameData.blackUsername();
+            }
+            if (!Objects.equals(user, correctUsername)) {
+                session.getRemote().sendString(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Not authorized").toString());
+                return;
+            }
+
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -62,6 +83,8 @@ public class WebSocketHandler {
         try {
             gameData.game().makeMove(move);
             dataAccess.gameDAO.updateGame(gameData);
+            connections.broadcast("", new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData));
+            connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, new Gson().toJson(move)));
         } catch (InvalidMoveException e) {
             String error = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Invalid Move").toString();
             session.getRemote().sendString(error);
@@ -71,35 +94,34 @@ public class WebSocketHandler {
             session.getRemote().sendString(error);
             return;
         }
-        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "make move");
-        //probably fix this next line
-        connections.broadcast(command.getAuthToken(), notificationMessage);
-        if (gameData.game().isInCheck(ChessGame.TeamColor.WHITE)) {
+//        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "make move");
+//        //probably fix this next line
+//        connections.broadcast(command.getAuthToken(), notificationMessage);
+        NotificationMessage notificationMessage;
+        if (gameData.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White is in checkmate");
+            connections.broadcast("", notificationMessage);
+        } else if (gameData.game().isInCheck(ChessGame.TeamColor.WHITE)) {
             notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White is in check");
-            connections.broadcast(command.getAuthToken(), notificationMessage);
-            if (gameData.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
-                notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White is in checkmate");
-                connections.broadcast(command.getAuthToken(), notificationMessage);
-            }
+            connections.broadcast("", notificationMessage);
         }
 
         if (gameData.game().isInCheck(ChessGame.TeamColor.BLACK)) {
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black is in checkmate");
+            connections.broadcast("", notificationMessage);
+        } else if (gameData.game().isInCheck(ChessGame.TeamColor.BLACK)) {
             notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black is in check");
-            connections.broadcast(command.getAuthToken(), notificationMessage);
-            if (gameData.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
-                notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black is in checkmate");
-                connections.broadcast(command.getAuthToken(), notificationMessage);
-            }
+            connections.broadcast("", notificationMessage);
         }
 
         if (gameData.game().isInStalemate(ChessGame.TeamColor.BLACK)) {
             notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black is in stalemate");
-            connections.broadcast(command.getAuthToken(), notificationMessage);
+            connections.broadcast("", notificationMessage);
         }
 
         if (gameData.game().isInStalemate(ChessGame.TeamColor.WHITE)) {
             notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White is in stalemate");
-            connections.broadcast(command.getAuthToken(), notificationMessage);
+            connections.broadcast("", notificationMessage);
         }
 
 
