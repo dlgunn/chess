@@ -1,14 +1,17 @@
 package ui;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.Arrays;
 
 public class GameplayClient extends Client {
     private GameData gameData;
+    private ChessGame.TeamColor color;
 
-    public GameplayClient(GameData gameData) {
+    public GameplayClient(GameData gameData, ChessGame.TeamColor color) {
         this.gameData = gameData;
+        this.color = color;
     }
 
     @Override
@@ -47,6 +50,7 @@ public class GameplayClient extends Client {
     }
 
     private String redraw() {
+        printBoard(gameData.game().getBoard(), color);
         return "";
     }
 

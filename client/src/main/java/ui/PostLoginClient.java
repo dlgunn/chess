@@ -58,7 +58,7 @@ public class PostLoginClient extends Client {
 
             GameData gameData = server.joinGame(Integer.parseInt(params[0]), color);
             printBoard(gameData.game().getBoard(), color);
-            repl.setClient(new GameplayClient(gameData));
+            repl.setClient(new GameplayClient(gameData, color));
             return "";
         }
         throw new Exception("Wrong number of arguments");
