@@ -1,8 +1,16 @@
 package ui;
 
+import model.GameData;
+
 import java.util.Arrays;
 
 public class GameplayClient extends Client {
+    private GameData gameData;
+
+    public GameplayClient(GameData gameData) {
+        this.gameData = gameData;
+    }
+
     @Override
     public String eval(String input, Repl repl) {
         try {
