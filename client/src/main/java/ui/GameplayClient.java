@@ -1,8 +1,11 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameplayClient extends Client {
@@ -33,7 +36,24 @@ public class GameplayClient extends Client {
         }
     }
 
-    private String highlight(String[] params) {
+    private String highlight(String[] params) throws Exception {
+        if (params.length != 2) {
+            throw new Exception("Wrong number of arguments");
+        }
+        int row;
+        int col;
+        try {
+            row = Integer.parseInt(params[0]);
+            col = Integer.parseInt(params[1]);
+        } catch (NumberFormatException e) {
+            return "Not a valid position";
+        }
+        if (row > 8 || row < 1 || col > 8 || col < 1) {
+            return "Not a valid position";
+        }
+        ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameData.game().validMoves(new ChessPosition(row, col));
+        printBoard(gameData.game().getBoard(), color, validMoves);
+
         return "";
     }
 

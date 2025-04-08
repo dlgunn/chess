@@ -1,9 +1,8 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
+
+import java.util.ArrayList;
 
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.BLACK_PAWN;
@@ -12,6 +11,9 @@ public abstract class Client {
     public abstract String eval(String input, Repl repl);
 
     public void printBoard(ChessBoard board, ChessGame.TeamColor color) {
+        printBoard(board, color, new ArrayList<>());
+    }
+    public void printBoard(ChessBoard board, ChessGame.TeamColor color, ArrayList<ChessMove> chessMoves) {
         int inc = 1;
         int start = 0;
         if (color == ChessGame.TeamColor.BLACK) {
@@ -21,18 +23,34 @@ public abstract class Client {
         for (int i = 8; i > 0; i--) {
             for (int j = 1; j < 9; j++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(start + inc * i, start + inc * j));
-                printSquareArt(piece, start + inc * i, start + inc * j);
+                printSquareArt(piece, start + inc * i, start + inc * j, chessMoves);
             }
             System.out.print(RESET_BG_COLOR + "\n");
         }
     }
 
-    private void printSquareArt(ChessPiece piece, int row, int col) {
+    private void printSquareArt(ChessPiece piece, int row, int col, ArrayList<ChessMove> highlightedMoves) {
+        ArrayList<ChessPosition> endPositions = new ArrayList<>();
+        if (highlightedMoves != null) {
+            for (ChessMove move : highlightedMoves) {
+                endPositions.add(move.getEndPosition());
+            }
+        }
+
+        ChessPosition position = new ChessPosition(row, col);
         if ((row + col) % 2 == 0) {
-            System.out.print(SET_BG_COLOR_BLUE);
+            if (endPositions.contains(position)) {
+                System.out.print(SET_BG_COLOR_DARK_GREEN);
+            } else {
+                System.out.print(SET_BG_COLOR_BLUE);
+            }
             System.out.print(SET_TEXT_COLOR_BLACK);
         } else {
-            System.out.print(SET_BG_COLOR_WHITE);
+            if (endPositions.contains(position)) {
+                System.out.print(SET_BG_COLOR_GREEN);
+            } else {
+                System.out.print(SET_BG_COLOR_WHITE);
+            }
             System.out.print(SET_TEXT_COLOR_BLACK);
         }
 
