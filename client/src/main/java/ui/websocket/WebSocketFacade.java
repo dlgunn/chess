@@ -3,6 +3,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import ui.Client;
 import ui.Repl;
 import websocket.commands.MakeMoveCommand;
@@ -78,6 +79,15 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+    public void resign(String authToken, int gameID) throws Exception {
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+        try {
+            this.session.getBasicRemote().sendText(command.toString());
+        } catch (IOException e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
     public void handleNotification(String message) {
         ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
         switch (serverMessage.getServerMessageType()) {
@@ -94,10 +104,10 @@ public class WebSocketFacade extends Endpoint {
             }
             case NOTIFICATION -> {
                 NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
-                ChessMove move = new Gson().fromJson(notificationMessage.getMessage(), ChessMove.class);
-                if (move.getStartPosition() != null) {
+                try {
+                    ChessMove move = new Gson().fromJson(notificationMessage.getMessage(), ChessMove.class);
                     System.out.print(move.toString());
-                } else {
+                } catch (JsonSyntaxException e) {
                     System.out.print(notificationMessage.getMessage());
                 }
                 Repl.printPrompt();
