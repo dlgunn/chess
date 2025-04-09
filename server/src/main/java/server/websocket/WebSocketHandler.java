@@ -21,6 +21,7 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Scanner;
 
 @WebSocket
 public class WebSocketHandler {

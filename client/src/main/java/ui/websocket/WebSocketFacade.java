@@ -16,6 +16,9 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class WebSocketFacade extends Endpoint {
 
@@ -79,6 +82,25 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void resign(String authToken, int gameID) throws Exception {
+        System.out.print("\n Are you sure you want to resign? (yes/no) ");
+        Repl.printPrompt();
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        var tokens = input.toLowerCase().split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0] : "help";
+        if (Objects.equals(cmd, "yes")) {
+            System.out.print("\n You lose :( \n");
+        } else if (Objects.equals(cmd, "no")) {
+            System.out.print("well keep playing then \n");
+            return;
+        } else {
+            System.out.print("Invalid command. Try resigning again");
+            return;
+        }
+        if (tokens.length > 1) {
+            System.out.print("too make parameters");
+        }
+
         UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         try {
             this.session.getBasicRemote().sendText(command.toString());
