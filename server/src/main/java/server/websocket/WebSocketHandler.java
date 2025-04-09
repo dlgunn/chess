@@ -64,7 +64,8 @@ public class WebSocketHandler {
             }
 
             dataAccess.gameDAO.updateGame(new GameData(gameData.gameID(), whiteUsername,blackUsername,gameData.gameName(),gameData.game()));
-            connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username + " left the game"), gameData.gameID());
+            connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username +
+                    " left the game"), gameData.gameID());
             connections.remove(command.getAuthToken(), gameData.gameID());
         } catch (DataAccessException e) {
             System.out.print("Could not update game");
@@ -85,9 +86,11 @@ public class WebSocketHandler {
                 session.getRemote().sendString(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Not authorized").toString());
                 return;
             }
-            GameData endGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game(), false);
+            GameData endGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),
+                    gameData.game(), false);
             dataAccess.gameDAO.updateGame(endGameData);
-            connections.broadcast("", new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username + " has resigned"), gameData.gameID());
+            connections.broadcast("", new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, username +
+                    " has resigned"), gameData.gameID());
         } catch (DataAccessException e) {
             System.out.print("Could not access game");
         } catch (IOException e) {
@@ -134,7 +137,8 @@ public class WebSocketHandler {
             dataAccess.gameDAO.updateGame(gameData);
             connections.broadcast("", new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData), gameData.gameID());
             String broadcastMessage = user + " made the move " + move;
-            connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, broadcastMessage), gameData.gameID());
+            connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, broadcastMessage),
+                    gameData.gameID());
         } catch (InvalidMoveException e) {
             String error = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Invalid Move").toString();
             session.getRemote().sendString(error);
@@ -144,11 +148,9 @@ public class WebSocketHandler {
             session.getRemote().sendString(error);
             return;
         }
-//        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "make move");
-//        //probably fix this next line
-//        connections.broadcast(command.getAuthToken(), notificationMessage);
         NotificationMessage notificationMessage;
-        GameData endGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game(), false);
+        GameData endGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),
+                gameData.game(), false);
         if (gameData.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
             notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White (" + user + ") is in checkmate");
             connections.broadcast("", notificationMessage, gameData.gameID());
@@ -185,9 +187,13 @@ public class WebSocketHandler {
             }
 
         }
+        checkStalemate(gameData, endGameData, user);
+    }
 
+    private void checkStalemate(GameData gameData, GameData endGameData, String user) throws IOException {
         if (gameData.game().isInStalemate(ChessGame.TeamColor.WHITE)) {
-            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White (" + user + ") is in stalemate");
+            NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White (" + user +
+                    ") is in stalemate");
             connections.broadcast("", notificationMessage, gameData.gameID());
             try {
                 dataAccess.gameDAO.updateGame(endGameData);
@@ -195,9 +201,6 @@ public class WebSocketHandler {
                 System.out.print("Could not update game");
             }
         }
-
-
-
     }
 
     private void connect(UserGameCommand userGameCommand, Session session) throws IOException, DataAccessException {
@@ -225,7 +228,8 @@ public class WebSocketHandler {
 
         String msg = new Gson().toJson(new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData));
         session.getRemote().sendString(msg);
-        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, authData.username() + " joined as " + whoJoined);
+        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, authData.username() +
+                " joined as " + whoJoined);
         //probably fix this next line
         connections.broadcast(userGameCommand.getAuthToken(), notificationMessage, gameData.gameID());
     }
