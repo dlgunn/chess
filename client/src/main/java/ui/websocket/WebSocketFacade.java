@@ -5,6 +5,7 @@ import chess.ChessMove;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import ui.Client;
+import ui.GameplayClient;
 import ui.Repl;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
@@ -22,9 +23,11 @@ public class WebSocketFacade extends Endpoint {
 
     Session session;
     private ChessGame.TeamColor color;
+    private GameplayClient client;
 
 
-    public WebSocketFacade(String url) throws Exception {
+    public WebSocketFacade(String url, GameplayClient client) throws Exception {
+        this.client = client;
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
@@ -98,6 +101,7 @@ public class WebSocketFacade extends Endpoint {
                 LoadGameMessage loadGameMessage = new Gson().fromJson(message, LoadGameMessage.class);
                 System.out.print("\n");
                 Client.printBoard(loadGameMessage.getGame().game().getBoard(), color);
+                client.setGameData(loadGameMessage.getGame());
                 Repl.printPrompt();
             }
             case NOTIFICATION -> {

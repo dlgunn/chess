@@ -1,6 +1,7 @@
 package ui;
 
 import chess.*;
+import model.GameData;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,8 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.BLACK_PAWN;
 
 public abstract class Client {
+    private GameData gameData;
+
     public abstract String eval(String input, Repl repl);
 
     public static void printBoard(ChessBoard board, ChessGame.TeamColor color) {

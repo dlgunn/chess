@@ -62,9 +62,10 @@ public class PostLoginClient extends Client {
 
             GameData gameData = server.joinGame(Integer.parseInt(params[0]), color);
 //            printBoard(gameData.game().getBoard(), color);
-            WebSocketFacade ws =  new WebSocketFacade(url);
+            GameplayClient gameplayClient = new GameplayClient(gameData, color, url, server.getAuthToken(), server);
+            WebSocketFacade ws =  new WebSocketFacade(url, gameplayClient);
             ws.join(server.getAuthToken(), gameData.gameID(), color);
-            repl.setClient(new GameplayClient(gameData, color, url, server.getAuthToken(), server));
+            repl.setClient(gameplayClient);
             return "";
         }
         throw new Exception("Wrong number of arguments");
@@ -78,12 +79,13 @@ public class PostLoginClient extends Client {
         if (params.length == 1) {
 //            GameData gameData = server.observeGame(Integer.parseInt(params[0]));
 //            printBoard(gameData.game().getBoard(), ChessGame.TeamColor.WHITE);
-            WebSocketFacade ws = new WebSocketFacade(url);
 
             try {
-                ws.join(server.getAuthToken(), Integer.parseInt(params[0]), ChessGame.TeamColor.WHITE );
                 GameData gameData = server.observeGame(Integer.parseInt(params[0]));
-                repl.setClient(new GameplayClient(gameData, ChessGame.TeamColor.WHITE, url, server.getAuthToken(), server));
+                GameplayClient gameplayClient = new GameplayClient(gameData, ChessGame.TeamColor.WHITE, url, server.getAuthToken(), server);
+                WebSocketFacade ws = new WebSocketFacade(url, gameplayClient);
+                ws.join(server.getAuthToken(), Integer.parseInt(params[0]), ChessGame.TeamColor.WHITE );
+                repl.setClient(gameplayClient);
 
             } catch (Exception e) {
                 throw new Exception("Not a number");

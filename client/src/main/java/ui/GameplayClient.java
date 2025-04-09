@@ -66,12 +66,16 @@ public class GameplayClient extends Client {
     }
 
     private String resign() throws Exception {
-        WebSocketFacade ws = new WebSocketFacade(url);
+        WebSocketFacade ws = new WebSocketFacade(url, null);
         ws.resign(authToken, gameData.gameID());
         return "";
     }
 
     private String move(Repl repl, String[] params) throws Exception {
+        if (params.length != 4) {
+            return "Wrong number of parameters";
+        }
+
         int row1;
         int col1;
         int row2;
@@ -84,11 +88,8 @@ public class GameplayClient extends Client {
         } catch (NumberFormatException e) {
             return "Must input integers";
         }
-        if (params.length != 4) {
-            return "Wrong number of parameters";
-        }
         ChessMove move = new ChessMove(new ChessPosition(row1, col1), new ChessPosition(row2, col2), null);
-        WebSocketFacade ws = new WebSocketFacade(url);
+        WebSocketFacade ws = new WebSocketFacade(url, null);
         ws.makeMove(move, authToken, gameData.gameID());
 
 
@@ -96,13 +97,14 @@ public class GameplayClient extends Client {
     }
 
     private String leave(Repl repl) throws Exception {
-        WebSocketFacade ws = new WebSocketFacade(url);
+        WebSocketFacade ws = new WebSocketFacade(url, null);
         ws.leave(authToken, gameData.gameID());
         repl.setClient(new PostLoginClient(facade,url));
         return "";
     }
 
     private String redraw() {
+
         printBoard(gameData.game().getBoard(), color);
         return "";
     }
@@ -118,5 +120,9 @@ public class GameplayClient extends Client {
                     - highlight <row> <col>
                     - help
                     """;
+    }
+
+    public void setGameData(GameData gameData) {
+        this.gameData = gameData;
     }
 }
