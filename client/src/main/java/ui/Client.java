@@ -9,7 +9,6 @@ import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.BLACK_PAWN;
 
 public abstract class Client {
-    private GameData gameData;
 
     public abstract String eval(String input, Repl repl);
 

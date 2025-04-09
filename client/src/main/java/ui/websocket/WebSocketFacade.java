@@ -1,9 +1,7 @@
 package ui.websocket;
-import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import ui.Client;
 import ui.GameplayClient;
 import ui.Repl;
@@ -23,7 +21,7 @@ public class WebSocketFacade extends Endpoint {
 
     Session session;
     private ChessGame.TeamColor color;
-    private GameplayClient client;
+    private final GameplayClient client;
 
 
     public WebSocketFacade(String url, GameplayClient client) throws Exception {

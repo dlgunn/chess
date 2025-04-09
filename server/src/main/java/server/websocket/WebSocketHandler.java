@@ -133,7 +133,7 @@ public class WebSocketHandler {
             gameData.game().makeMove(move);
             dataAccess.gameDAO.updateGame(gameData);
             connections.broadcast("", new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData), gameData.gameID());
-            String broadcastMessage = user + " made the move " + move.toString();
+            String broadcastMessage = user + " made the move " + move;
             connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, broadcastMessage), gameData.gameID());
         } catch (InvalidMoveException e) {
             String error = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Invalid Move").toString();

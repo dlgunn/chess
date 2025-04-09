@@ -1,20 +1,16 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
 import model.GameData;
 import server.ServerFacade;
 import ui.websocket.WebSocketFacade;
 
 import java.util.Arrays;
 
-import static ui.EscapeSequences.*;
 
 public class PostLoginClient extends Client {
     private final ServerFacade server;
-    private String url;
+    private final String url;
 
     public PostLoginClient(ServerFacade server, String url) {
         this.server = server;

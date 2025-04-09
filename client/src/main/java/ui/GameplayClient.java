@@ -34,7 +34,7 @@ public class GameplayClient extends Client {
             return switch (cmd) {
                 case "redraw" -> redraw();
                 case "leave" -> leave(repl);
-                case "move" -> move(repl, params);
+                case "move" -> move(params);
                 case "resign" -> resign();
                 case "highlight" -> highlight(params);
                 default -> help();
@@ -71,7 +71,7 @@ public class GameplayClient extends Client {
         return "";
     }
 
-    private String move(Repl repl, String[] params) throws Exception {
+    private String move(String[] params) throws Exception {
         if (params.length != 4) {
             return "Wrong number of parameters";
         }

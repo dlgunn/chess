@@ -1,11 +1,6 @@
 package server.websocket;
 
-import dataaccess.DataAccess;
-import dataaccess.UserDAO;
-import model.GameData;
-import model.UserData;
 import org.eclipse.jetty.websocket.api.Session;
-import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
