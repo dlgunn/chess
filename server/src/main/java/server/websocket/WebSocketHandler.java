@@ -101,6 +101,7 @@ public class WebSocketHandler {
 
         ChessMove move = command.getChessMove();
         GameData gameData;
+        String user;
         try {
             AuthData authData = dataAccess.authDAO.getAuth(command.getAuthToken());
             if (authData == null) {
@@ -112,7 +113,7 @@ public class WebSocketHandler {
                 session.getRemote().sendString(new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "The game is over").toString());
                 return;
             }
-            String user = authData.username();
+            user = authData.username();
             String correctUsername;
             ChessGame.TeamColor pieceColor = gameData.game().getBoard().getPiece(move.getStartPosition()).getTeamColor();
             if (pieceColor == ChessGame.TeamColor.WHITE) {
@@ -132,7 +133,8 @@ public class WebSocketHandler {
             gameData.game().makeMove(move);
             dataAccess.gameDAO.updateGame(gameData);
             connections.broadcast("", new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData), gameData.gameID());
-            connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, new Gson().toJson(move)), gameData.gameID());
+            String broadcastMessage = user + " made the move " + move.toString();
+            connections.broadcast(command.getAuthToken(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, broadcastMessage), gameData.gameID());
         } catch (InvalidMoveException e) {
             String error = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Invalid Move").toString();
             session.getRemote().sendString(error);
@@ -148,7 +150,7 @@ public class WebSocketHandler {
         NotificationMessage notificationMessage;
         GameData endGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game(), false);
         if (gameData.game().isInCheckmate(ChessGame.TeamColor.WHITE)) {
-            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White is in checkmate");
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White (" + user + ") is in checkmate");
             connections.broadcast("", notificationMessage, gameData.gameID());
             try {
                 dataAccess.gameDAO.updateGame(endGameData);
@@ -156,12 +158,12 @@ public class WebSocketHandler {
                 System.out.print("Could not update game");
             }
         } else if (gameData.game().isInCheck(ChessGame.TeamColor.WHITE)) {
-            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White is in check");
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White (" + user + ") is in check");
             connections.broadcast("", notificationMessage, gameData.gameID());
         }
 
         if (gameData.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
-            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black is in checkmate");
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black (" + user + ") is in checkmate");
             connections.broadcast("", notificationMessage, gameData.gameID());
             try {
                 dataAccess.gameDAO.updateGame(endGameData);
@@ -169,12 +171,12 @@ public class WebSocketHandler {
                 System.out.print("Could not update game");
             }
         } else if (gameData.game().isInCheck(ChessGame.TeamColor.BLACK)) {
-            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black is in check");
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black (" + user + ") is in check");
             connections.broadcast("", notificationMessage, gameData.gameID());
         }
 
         if (gameData.game().isInStalemate(ChessGame.TeamColor.BLACK)) {
-            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black is in stalemate");
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "Black (" + user + ") is in stalemate");
             connections.broadcast("", notificationMessage, gameData.gameID());
             try {
                 dataAccess.gameDAO.updateGame(endGameData);
@@ -185,7 +187,7 @@ public class WebSocketHandler {
         }
 
         if (gameData.game().isInStalemate(ChessGame.TeamColor.WHITE)) {
-            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White is in stalemate");
+            notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "White (" + user + ") is in stalemate");
             connections.broadcast("", notificationMessage, gameData.gameID());
             try {
                 dataAccess.gameDAO.updateGame(endGameData);

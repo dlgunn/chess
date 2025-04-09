@@ -104,12 +104,7 @@ public class WebSocketFacade extends Endpoint {
             }
             case NOTIFICATION -> {
                 NotificationMessage notificationMessage = new Gson().fromJson(message, NotificationMessage.class);
-                try {
-                    ChessMove move = new Gson().fromJson(notificationMessage.getMessage(), ChessMove.class);
-                    System.out.print(move.toString());
-                } catch (JsonSyntaxException e) {
-                    System.out.print(notificationMessage.getMessage());
-                }
+                System.out.print(notificationMessage.getMessage());
                 Repl.printPrompt();
             }
         }

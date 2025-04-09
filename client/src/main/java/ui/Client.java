@@ -31,10 +31,11 @@ public abstract class Client {
 
     private static void printSquareArt(ChessPiece piece, int row, int col, ArrayList<ChessMove> highlightedMoves) {
         ArrayList<ChessPosition> endPositions = new ArrayList<>();
-        if (highlightedMoves != null) {
+        if (highlightedMoves != null && !highlightedMoves.isEmpty()) {
             for (ChessMove move : highlightedMoves) {
                 endPositions.add(move.getEndPosition());
             }
+            endPositions.add(highlightedMoves.getFirst().getStartPosition());
         }
 
         ChessPosition position = new ChessPosition(row, col);

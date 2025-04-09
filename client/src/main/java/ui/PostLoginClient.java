@@ -76,8 +76,14 @@ public class PostLoginClient extends Client {
 
     private String observeGame(String[] params) throws Exception {
         if (params.length == 1) {
-            GameData gameData = server.observeGame(Integer.parseInt(params[0]));
-            printBoard(gameData.game().getBoard(), ChessGame.TeamColor.WHITE);
+//            GameData gameData = server.observeGame(Integer.parseInt(params[0]));
+//            printBoard(gameData.game().getBoard(), ChessGame.TeamColor.WHITE);
+            WebSocketFacade ws = new WebSocketFacade(url);
+            try {
+                ws.join(server.getAuthToken(), Integer.parseInt(params[0]), ChessGame.TeamColor.WHITE );
+            } catch (Exception e) {
+                throw new Exception("Not a number");
+            }
         } else {
             throw new Exception("Wrong number of parameters");
         }
