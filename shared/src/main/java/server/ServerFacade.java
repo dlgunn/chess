@@ -170,4 +170,8 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, null, null);
 
     }
+
+    public String getAuthToken() {
+        return this.authToken;
+    }
 }

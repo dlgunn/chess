@@ -4,6 +4,8 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import model.GameData;
+import server.ServerFacade;
+import ui.websocket.WebSocketFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,10 +13,16 @@ import java.util.Arrays;
 public class GameplayClient extends Client {
     private GameData gameData;
     private ChessGame.TeamColor color;
+    private String url;
+    private String authToken;
+    private ServerFacade facade;
 
-    public GameplayClient(GameData gameData, ChessGame.TeamColor color) {
+    public GameplayClient(GameData gameData, ChessGame.TeamColor color, String url, String authToken, ServerFacade facade) {
         this.gameData = gameData;
         this.color = color;
+        this.url = url;
+        this.authToken = authToken;
+        this.facade = facade;
     }
 
     @Override
@@ -57,15 +65,40 @@ public class GameplayClient extends Client {
         return "";
     }
 
-    private String resign() {
+    private String resign() throws Exception {
+        WebSocketFacade ws = new WebSocketFacade(url);
+        ws.resign(authToken, gameData.gameID());
         return "";
     }
 
-    private String move(Repl repl, String[] params) {
+    private String move(Repl repl, String[] params) throws Exception {
+        int row1;
+        int col1;
+        int row2;
+        int col2;
+        try {
+            row1 = Integer.parseInt(params[0]);
+            col1 = Integer.parseInt(params[1]);
+            row2 = Integer.parseInt(params[2]);
+            col2 = Integer.parseInt(params[3]);
+        } catch (NumberFormatException e) {
+            return "Must input integers";
+        }
+        if (params.length != 4) {
+            return "Wrong number of parameters";
+        }
+        ChessMove move = new ChessMove(new ChessPosition(row1, col1), new ChessPosition(row2, col2), null);
+        WebSocketFacade ws = new WebSocketFacade(url);
+        ws.makeMove(move, authToken, gameData.gameID());
+
+
         return "";
     }
 
-    private String leave(Repl repl) {
+    private String leave(Repl repl) throws Exception {
+        WebSocketFacade ws = new WebSocketFacade(url);
+        ws.leave(authToken, gameData.gameID());
+        repl.setClient(new PostLoginClient(facade,url));
         return "";
     }
 

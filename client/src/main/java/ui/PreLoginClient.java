@@ -8,9 +8,11 @@ import java.util.Arrays;
 public class PreLoginClient extends Client {
 //    private State state = State.SIGNEDOUT;
     private final ServerFacade server;
+    private String url;
 
     public PreLoginClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
+        this.url = serverUrl;
     }
 
     public PreLoginClient(ServerFacade server) {
@@ -38,7 +40,7 @@ public class PreLoginClient extends Client {
         if (params.length == 2) {
             var userData = new UserData(params[0],params[1],null);
             String username = server.login(userData);
-            repl.setClient(new PostLoginClient(server));
+            repl.setClient(new PostLoginClient(server, url));
             return String.format("You logged in as %s.", username);
         }
 
@@ -59,7 +61,7 @@ public class PreLoginClient extends Client {
         if (params.length == 3) {
             var userData = new UserData(params[0],params[1],params[2]);
              String username = server.register(userData);
-             repl.setClient(new PostLoginClient(server));
+             repl.setClient(new PostLoginClient(server, url));
             return String.format("You logged in as %s.", username);
         }
         throw new Exception("Wrong number of arguments");

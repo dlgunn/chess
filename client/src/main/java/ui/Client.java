@@ -10,10 +10,10 @@ import static ui.EscapeSequences.BLACK_PAWN;
 public abstract class Client {
     public abstract String eval(String input, Repl repl);
 
-    public void printBoard(ChessBoard board, ChessGame.TeamColor color) {
+    public static void printBoard(ChessBoard board, ChessGame.TeamColor color) {
         printBoard(board, color, new ArrayList<>());
     }
-    public void printBoard(ChessBoard board, ChessGame.TeamColor color, ArrayList<ChessMove> chessMoves) {
+    public static void printBoard(ChessBoard board, ChessGame.TeamColor color, ArrayList<ChessMove> chessMoves) {
         int inc = 1;
         int start = 0;
         if (color == ChessGame.TeamColor.BLACK) {
@@ -29,7 +29,7 @@ public abstract class Client {
         }
     }
 
-    private void printSquareArt(ChessPiece piece, int row, int col, ArrayList<ChessMove> highlightedMoves) {
+    private static void printSquareArt(ChessPiece piece, int row, int col, ArrayList<ChessMove> highlightedMoves) {
         ArrayList<ChessPosition> endPositions = new ArrayList<>();
         if (highlightedMoves != null) {
             for (ChessMove move : highlightedMoves) {
@@ -61,7 +61,7 @@ public abstract class Client {
         }
     }
 
-    private String getIcon(ChessPiece piece) {
+    private static String getIcon(ChessPiece piece) {
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
             return switch (piece.getPieceType()) {
                 case KING -> WHITE_KING;

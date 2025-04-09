@@ -3,9 +3,13 @@ package websocket.messages;
 import model.GameData;
 
 public class LoadGameMessage extends ServerMessage {
-    GameData game;
+    private GameData game;
     public LoadGameMessage(ServerMessageType type, GameData gameData) {
         super(type);
         this.game = gameData;
+    }
+
+    public GameData getGame() {
+        return this.game;
     }
 }

@@ -212,10 +212,18 @@ public class WebSocketHandler {
             session.getRemote().sendString(message);
             return;
         }
+        String whoJoined;
+        if (Objects.equals(authData.username(), gameData.whiteUsername())) {
+            whoJoined = "white";
+        } else if (Objects.equals(authData.username(), gameData.blackUsername())) {
+            whoJoined = "black";
+        } else {
+            whoJoined = "an observer";
+        }
 
         String msg = new Gson().toJson(new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, gameData));
         session.getRemote().sendString(msg);
-        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "fix later");
+        NotificationMessage notificationMessage = new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, authData.username() + " joined as " + whoJoined);
         //probably fix this next line
         connections.broadcast(userGameCommand.getAuthToken(), notificationMessage, gameData.gameID());
     }

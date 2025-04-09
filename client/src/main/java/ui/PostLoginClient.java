@@ -6,15 +6,19 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
 import server.ServerFacade;
+import ui.websocket.WebSocketFacade;
+
 import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
 
 public class PostLoginClient extends Client {
     private final ServerFacade server;
+    private String url;
 
-    public PostLoginClient(ServerFacade server) {
+    public PostLoginClient(ServerFacade server, String url) {
         this.server = server;
+        this.url = url;
     }
 
 
@@ -57,8 +61,10 @@ public class PostLoginClient extends Client {
             }
 
             GameData gameData = server.joinGame(Integer.parseInt(params[0]), color);
-            printBoard(gameData.game().getBoard(), color);
-            repl.setClient(new GameplayClient(gameData, color));
+//            printBoard(gameData.game().getBoard(), color);
+            WebSocketFacade ws =  new WebSocketFacade(url);
+            ws.join(server.getAuthToken(), gameData.gameID(), color);
+            repl.setClient(new GameplayClient(gameData, color, url, server.getAuthToken(), server));
             return "";
         }
         throw new Exception("Wrong number of arguments");
