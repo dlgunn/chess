@@ -32,7 +32,7 @@ public class PostLoginClient extends Client {
                 case "logout" -> logout(repl, params);
                 case "create" -> createGame(params);
                 case "join" -> joinGame(repl, params);
-                case "observe" -> observeGame(params);
+                case "observe" -> observeGame(repl, params);
                 case "list" -> listGames(params);
                 case "quit" -> "quit";
                 default -> help();
@@ -74,13 +74,17 @@ public class PostLoginClient extends Client {
         server.clear();
     }
 
-    private String observeGame(String[] params) throws Exception {
+    private String observeGame(Repl repl, String[] params) throws Exception {
         if (params.length == 1) {
 //            GameData gameData = server.observeGame(Integer.parseInt(params[0]));
 //            printBoard(gameData.game().getBoard(), ChessGame.TeamColor.WHITE);
             WebSocketFacade ws = new WebSocketFacade(url);
+
             try {
                 ws.join(server.getAuthToken(), Integer.parseInt(params[0]), ChessGame.TeamColor.WHITE );
+                GameData gameData = server.observeGame(Integer.parseInt(params[0]));
+                repl.setClient(new GameplayClient(gameData, ChessGame.TeamColor.WHITE, url, server.getAuthToken(), server));
+
             } catch (Exception e) {
                 throw new Exception("Not a number");
             }

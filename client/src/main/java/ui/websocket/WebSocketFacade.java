@@ -22,14 +22,12 @@ public class WebSocketFacade extends Endpoint {
 
     Session session;
     private ChessGame.TeamColor color;
-//    NotificationHandler notificationHandler;
 
 
     public WebSocketFacade(String url) throws Exception {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
-//            this.notificationHandler = notificationHandler;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
